@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" hash="928604263">
+    <data-source source="LOCAL" name="log" uuid="90ed8c8d-95f0-4bdf-ac8e-3de9fabb4f61">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:C:/UFT/db/pgem.db</jdbc-url>
+      <libraries />
+    </data-source>
+    <data-source source="LOCAL" name="config" uuid="8881cc70-f5de-4b0b-869b-7c4960db9ad7">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:C:/UFT/db/pgem_config.db</jdbc-url>
+      <libraries />
+    </data-source>
+    <data-source source="LOCAL" name="SQLite -" uuid="42fac5a8-ff74-49b7-b860-09b383f4a6b8">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:D:/Cloud Services/SkyDrive/AGIGA/Coronado_UFT_project/test_log/db/pgem.db</jdbc-url>
+      <libraries />
+    </data-source>
+    <data-source source="LOCAL" name="pgem" uuid="1cba8bf0-b14d-43df-b3c0-a8c284700613">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:C:/UFT/db/pgem.db</jdbc-url>
+      <libraries />
+    </data-source>
+    <data-source source="LOCAL" name="SQLite - [2]" uuid="cfd5f567-18a9-4aa3-8767-db26b6a2c26b">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:D:/Cloud Services/SkyDrive/cypress/AGIGA/UFT_project/test_log/db/pgem.db</jdbc-url>
+      <libraries />
+    </data-source>
+  </component>
+</project>

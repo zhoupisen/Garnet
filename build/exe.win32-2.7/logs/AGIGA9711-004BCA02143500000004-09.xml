@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<entity>
+    <self_capacitor>23.2842400113</self_capacitor>
+    <test_result>PASS</test_result>
+    <capacitor>24.6357770352</capacitor>
+    <test_date>None</test_date>
+    <slotnum>1</slotnum>
+    <charge_time>114.427999973</charge_time>
+    <barcode>AGIGA9711-004BCA02143500000004-09</barcode>
+    <discharge_time>55.4000000954</discharge_time>
+    <error_message>None</error_message>
+</entity>

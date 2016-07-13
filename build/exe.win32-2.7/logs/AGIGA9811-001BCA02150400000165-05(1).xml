@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<entity>
+    <cable_barcode></cable_barcode>
+    <barcode>AGIGA9811-001BCA02150400000165-05</barcode>
+    <program_vpd>PASS</program_vpd>
+    <charge_time>74.3680000305</charge_time>
+    <self_capacitor>None</self_capacitor>
+    <capacitor>23.6712606702</capacitor>
+    <test_result>PASS</test_result>
+    <discharge_time>85.1730000973</discharge_time>
+    <error_message>None</error_message>
+    <slotnum>0</slotnum>
+    <test_date>2015-05-28 09:03:49.611000</test_date>
+</entity>

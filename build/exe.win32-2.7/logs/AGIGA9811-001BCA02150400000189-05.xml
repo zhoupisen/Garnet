@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<entity>
+    <cable_barcode></cable_barcode>
+    <barcode>AGIGA9811-001BCA02150400000189-05</barcode>
+    <program_vpd>FAIL</program_vpd>
+    <charge_time>151.012000084</charge_time>
+    <self_capacitor>None</self_capacitor>
+    <capacitor>None</capacitor>
+    <test_result>FAIL</test_result>
+    <discharge_time>None</discharge_time>
+    <error_message>Charge Time Too Long.</error_message>
+    <slotnum>2</slotnum>
+    <test_date>2015-05-28 08:47:29.803000</test_date>
+</entity>

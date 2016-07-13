@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<entity>
+    <cable_barcode></cable_barcode>
+    <barcode>AGIGA9811-001BCA02143900000228-01</barcode>
+    <program_vpd>PASS</program_vpd>
+    <charge_time>61.7520000935</charge_time>
+    <self_capacitor>None</self_capacitor>
+    <capacitor>16.4669033722</capacitor>
+    <test_result>FAIL</test_result>
+    <discharge_time>61.8080000877</discharge_time>
+    <error_message>Capacitor out of range.</error_message>
+    <slotnum>0</slotnum>
+    <test_date>2015-08-04 07:43:44.508000</test_date>
+</entity>

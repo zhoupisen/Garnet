@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<entity>
+    <cable_barcode></cable_barcode>
+    <barcode>AGIGA9831-001JCA02162800000001-01</barcode>
+    <program_vpd>FAIL</program_vpd>
+    <charge_time>74.7109999657</charge_time>
+    <self_capacitor>None</self_capacitor>
+    <capacitor>255</capacitor>
+    <test_result>FAIL</test_result>
+    <discharge_time>None</discharge_time>
+    <error_message>Cap is over limits</error_message>
+    <slotnum>0</slotnum>
+    <test_date>2016-07-12 09:05:46.687000</test_date>
+</entity>

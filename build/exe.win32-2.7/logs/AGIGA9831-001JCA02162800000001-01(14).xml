@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<entity>
+    <cable_barcode></cable_barcode>
+    <barcode>AGIGA9831-001JCA02162800000001-01</barcode>
+    <program_vpd>PASS</program_vpd>
+    <charge_time>74.6319999695</charge_time>
+    <self_capacitor>None</self_capacitor>
+    <capacitor>103</capacitor>
+    <test_result>FAIL</test_result>
+    <discharge_time>67.1059999466</discharge_time>
+    <error_message>Discharge Time Too Short.</error_message>
+    <slotnum>0</slotnum>
+    <test_date>2016-07-12 08:52:45.975000</test_date>
+</entity>

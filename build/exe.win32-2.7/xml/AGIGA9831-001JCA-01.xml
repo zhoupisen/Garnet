@@ -13,7 +13,7 @@
             <enable>1</enable>
             <description>Capacitor Value Calculation</description>
             <min>95</min>
-            <max>105</max>
+            <max>200</max>
             <misc>None</misc>
             <stoponfail>1</stoponfail>
         </Capacitor>

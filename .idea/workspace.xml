@@ -96,20 +96,20 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="channel.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="channel.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/UFT/channel.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="533" column="24" selection-start-line="533" selection-start-column="24" selection-end-line="533" selection-end-column="24" />
+            <state vertical-scroll-proportion="0.5846154">
+              <caret line="518" column="53" selection-start-line="518" selection-start-column="47" selection-end-line="518" selection-end-column="53" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="UFT_Ui.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="UFT_Ui.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/UFT_GUI/UFT_Ui.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.33288947">
+            <state vertical-scroll-proportion="0.0">
               <caret line="426" column="65" selection-start-line="426" selection-start-column="65" selection-end-line="426" selection-end-column="65" />
               <folding />
             </state>
@@ -227,8 +227,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Scratches" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -299,6 +297,8 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -1333,18 +1333,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/UFT/channel.py">
+    <entry file="file://$PROJECT_DIR$/src/UFT_GUI/UFT_Ui.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="533" column="24" selection-start-line="533" selection-start-column="24" selection-end-line="533" selection-end-column="24" />
+          <caret line="426" column="65" selection-start-line="426" selection-start-column="65" selection-end-line="426" selection-end-column="65" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/UFT_GUI/UFT_Ui.py">
+    <entry file="file://$PROJECT_DIR$/src/UFT/channel.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33288947">
-          <caret line="426" column="65" selection-start-line="426" selection-start-column="65" selection-end-line="426" selection-end-column="65" />
+        <state vertical-scroll-proportion="0.5846154">
+          <caret line="518" column="53" selection-start-line="518" selection-start-column="47" selection-end-line="518" selection-end-column="53" />
           <folding />
         </state>
       </provider>

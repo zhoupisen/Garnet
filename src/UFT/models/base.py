@@ -233,8 +233,29 @@ class PGEMBase(DUT):
         """
         self.device.slave_addr = 0x14
         # check temp value
-        val = self.device.read_reg(0x24, length=1)[0]
-        temp = int(val)
+        val1 = self.device.read_reg(0x24, length=1)[0]
+        val2 = self.device.read_reg(0x25, length=1)[0]
+        temp=0.0
+        if val1&0x04==0x04:
+            temp=0.25
+        if val1&0x08==0x08:
+            temp = temp + 0.5
+        if val1&0x10==0x10:
+            temp = temp + 1
+        if val1&0x20==0x20:
+            temp = temp + 2
+        if val1&0x40==0x40:
+            temp = temp + 4
+        if val1&0x80==0x80:
+            temp = temp + 8
+        if val2&0x01==0x01:
+            temp = temp + 16
+        if val2&0x02==0x02:
+            temp = temp + 32
+        if val2&0x04==0x04:
+            temp = temp + 64
+        if val2&0x08==0x08:
+            temp = temp + 128
         logger.debug("temp value: {0}".format(temp))
         return temp
 

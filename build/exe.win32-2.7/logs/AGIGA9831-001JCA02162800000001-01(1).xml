@@ -3,12 +3,12 @@
     <cable_barcode></cable_barcode>
     <barcode>AGIGA9831-001JCA02162800000001-01</barcode>
     <program_vpd>FAIL</program_vpd>
-    <charge_time>255.698999882</charge_time>
+    <charge_time>None</charge_time>
     <self_capacitor>None</self_capacitor>
-    <capacitor>None</capacitor>
-    <test_result>FAIL</test_result>
-    <discharge_time>None</discharge_time>
-    <error_message>Charge Time Too Long.</error_message>
+    <capacitor>105</capacitor>
+    <test_result>PASS</test_result>
+    <discharge_time>99.242000103</discharge_time>
+    <error_message>None</error_message>
     <slotnum>0</slotnum>
-    <test_date>2016-07-12 02:39:45.979000</test_date>
+    <test_date>2016-08-02 07:32:22.281000</test_date>
 </entity>

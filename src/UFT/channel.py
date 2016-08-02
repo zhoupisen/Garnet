@@ -209,6 +209,7 @@ class Channel(threading.Thread):
     def charge_dut(self):
         """charge
         """
+
         for dut in self.dut_list:
             if dut is None:
                 continue
@@ -275,7 +276,7 @@ class Channel(threading.Thread):
                     dut.status = DUT_STATUS.Fail
                     dut.errormessage = "Charge Time Too Long."
                 elif (dut.charge_status()):
-                    if(7.4 >dut.meas_vcap()> 6.5)&(max_chargetime>dut.charge_time>min_chargetime):  #dut.meas_chg_time()
+                    if(7.4 >dut.meas_vcap() >= threshold)&(max_chargetime>dut.charge_time>min_chargetime):  #dut.meas_chg_time()
                         all_charged &= True
                         dut.status = DUT_STATUS.Idle  # pass
                     else:
@@ -293,6 +294,7 @@ class Channel(threading.Thread):
     def discharge_dut(self):
         """discharge
         """
+
         for dut in self.dut_list:
             if dut is None:
                 continue
@@ -390,6 +392,7 @@ class Channel(threading.Thread):
         """ program vpd of DUT.
         :return: None
         """
+
         for dut in self.dut_list:
             if dut is None:
                 continue
@@ -488,11 +491,20 @@ class Channel(threading.Thread):
             if dut.status != DUT_STATUS.Idle:
                 continue
             self.switch_to_dut(dut.slotnum)
-            time.sleep(1)
             dut.start_cap()
-            time.sleep(5)
+            time.sleep(1)
             logger.info("started cap measure")
-        self.init()
+
+        #close load and set PS
+        self.ld.reset()
+        time.sleep(2)
+        # setup power supply
+        self.ps.selectChannel(node=PS_ADDR, ch=PS_CHAN)
+        setting = {"volt": PS_VOLT, "curr": PS_CURR,
+                   "ovp": PS_OVP, "ocp": PS_OCP}
+        self.ps.set(setting)
+        self.ps.activateOutput()
+        time.sleep(2)
         start_time = time.time()
 
         all_cap_mears=False
@@ -508,7 +520,7 @@ class Channel(threading.Thread):
                 val = self.adk.read_reg(0x23,0x01)[0]
                 logger.info("PGEMSTAT.BIT2: {0}".format(val))
                 vcap_temp=dut.meas_vcap()
-                logger.info("vcap in cap calculate: {0}".format(vcap_temp))
+                logger.info("dut: {0} vcap in cap calculate: {1}".format(dut.slotnum,vcap_temp))
                 if (val | 0xFB)==0xFB: #PGEMSTAT.BIT2==0 CAP MEASURE COMPLETE
                     all_cap_mears &= True
                     val1 = dut.read_vpd_byaddress(0x100)[0] #`````````````````````````read cap vale from VPD``````````compare````````````````````````````
@@ -516,7 +528,7 @@ class Channel(threading.Thread):
                     dut.capacitance_measured=val1
                     config = load_test_item(self.config_list[dut.slotnum],
                                     "Capacitor")
-                    if not (config["min"]<val1<config["max"]):
+                    if not (config["min"] < val1 < config["max"]):
                         dut.status=DUT_STATUS.Fail
                         dut.errormessage = "Cap is over limits"
                         logger.info("dut: {0} capacitor: {1} message: {2} ".
@@ -577,7 +589,6 @@ class Channel(threading.Thread):
                 continue
             if not os.path.exists(RESULT_LOG):
                 os.makedirs(RESULT_LOG)
-
             filename = dut.barcode + ".xml"
             filepath = os.path.join(RESULT_LOG, filename)
             i = 1
@@ -642,14 +653,14 @@ class Channel(threading.Thread):
                 try:
                     logger.info("Channel: Discharge DUT.")
                     self.discharge_dut()
-                    self.progressbar += 30
+                    self.progressbar += 20
                 except Exception as e:
                     self.error(e)
             elif (state == ChannelStates.PROGRAM_VPD):
                 try:
                     logger.info("Channel: Program VPD.")
                     self.program_dut()
-                    self.progressbar += 5
+                    self.progressbar += 10
                 except Exception as e:
                     self.error(e)
             elif (state == ChannelStates.CHECK_TEMP):
@@ -663,7 +674,7 @@ class Channel(threading.Thread):
                 try:
                     logger.info("Channel: Check Capacitor Value")
                     self.calculate_capacitance()
-                    self.progressbar += 5
+                    self.progressbar += 30
                 except Exception as e:
                     self.error(e)
             else:
@@ -673,8 +684,8 @@ class Channel(threading.Thread):
     def auto_test(self):
         self.queue.put(ChannelStates.INIT)
         self.queue.put(ChannelStates.CHARGE)
-        self.queue.put(ChannelStates.CHECK_CAPACITANCE)
         self.queue.put(ChannelStates.PROGRAM_VPD)
+        self.queue.put(ChannelStates.CHECK_CAPACITANCE)
         #self.queue.put(ChannelStates.CHECK_ENCRYPTED_IC)
         #self.queue.put(ChannelStates.CHECK_TEMP)
         #self.queue.put(ChannelStates.CHECK_POWER_FAIL)

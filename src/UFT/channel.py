@@ -392,7 +392,7 @@ class Channel(threading.Thread):
         """ program vpd of DUT.
         :return: None
         """
-
+        time.sleep(5)
         for dut in self.dut_list:
             if dut is None:
                 continue
@@ -403,16 +403,12 @@ class Channel(threading.Thread):
             if (config["stoponfail"]) & (dut.status != DUT_STATUS.Idle):
                 continue
             self.switch_to_dut(dut.slotnum)
+            if not dut.read_hwready():
+                time.sleep(5)
 
             try:
                 dut.write_vpd(config["File"], config["PGEMID"])
                 dut.read_vpd()
-                # check GTG_WARNING == 0x00
-                temp=self.adk.read_reg(0x22)[0]
-                logger.info("GTG_Warning value: {0}".format(temp))
-                if not (temp==0x00):
-                    dut.status = DUT_STATUS.Fail
-                    dut.errormessage = "GTG_warning != 0x00"
                 dut.program_vpd = 1
             except AssertionError:
                 dut.status = DUT_STATUS.Fail
@@ -543,7 +539,7 @@ class Channel(threading.Thread):
                                dut.errormessage))
                 else:
                     all_cap_mears &= False
-            time.sleep(10)
+            time.sleep(2)
 
         #check capacitance ok
         for dut in self.dut_list:
@@ -559,6 +555,12 @@ class Channel(threading.Thread):
                 dut.status=DUT_STATUS.Fail
                 dut.errormessage = "GTG.bit1 ==0 "
                 logger.info("GTG.bit1 ==0")
+            # check GTG_WARNING == 0x00
+            temp=self.adk.read_reg(0x22)[0]
+            logger.info("GTG_Warning value: {0}".format(temp))
+            if not (temp==0x00):
+                dut.status = DUT_STATUS.Fail
+                dut.errormessage = "GTG_warning != 0x00"
 
     def save_db(self):
         # setup database
@@ -683,8 +685,9 @@ class Channel(threading.Thread):
 
     def auto_test(self):
         self.queue.put(ChannelStates.INIT)
-        self.queue.put(ChannelStates.CHARGE)
         self.queue.put(ChannelStates.PROGRAM_VPD)
+        self.queue.put(ChannelStates.CHARGE)
+        #self.queue.put(ChannelStates.PROGRAM_VPD)
         self.queue.put(ChannelStates.CHECK_CAPACITANCE)
         #self.queue.put(ChannelStates.CHECK_ENCRYPTED_IC)
         #self.queue.put(ChannelStates.CHECK_TEMP)

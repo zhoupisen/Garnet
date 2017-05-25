@@ -266,6 +266,7 @@ class Channel(threading.Thread):
                 this_cycle.vcap = dut.meas_vcap()
 
                 threshold = float(config["Threshold"].strip("aAvV"))
+                ceiling = float(config["Ceiling"].strip("aAvV"))
                 max_chargetime = config["max"]
                 min_chargetime = config["min"]
 
@@ -276,7 +277,7 @@ class Channel(threading.Thread):
                     dut.status = DUT_STATUS.Fail
                     dut.errormessage = "Charge Time Too Long."
                 elif (dut.charge_status()):
-                    if(7.4 >dut.meas_vcap() >= threshold)&(max_chargetime>dut.charge_time>min_chargetime):  #dut.meas_chg_time()
+                    if(ceiling >dut.meas_vcap() >= threshold)&(max_chargetime>dut.charge_time>min_chargetime):  #dut.meas_chg_time()
                         all_charged &= True
                         dut.status = DUT_STATUS.Idle  # pass
                     else:
@@ -524,16 +525,20 @@ class Channel(threading.Thread):
                     dut.capacitance_measured=val1
                     config = load_test_item(self.config_list[dut.slotnum],
                                     "Capacitor")
+                    if (config.has_key("Overtime")):
+                        overtime=float(config["Overtime"])
+                    else:
+                        overtime=600
                     if not (config["min"] < val1 < config["max"]):
                         dut.status=DUT_STATUS.Fail
                         dut.errormessage = "Cap is over limits"
                         logger.info("dut: {0} capacitor: {1} message: {2} ".
                             format(dut.slotnum, dut.capacitance_measured,
                                dut.errormessage))
-                elif time.time()-start_time > 600:
+                elif time.time()-start_time > overtime:
                     all_cap_mears &= True
                     dut.status=DUT_STATUS.Fail
-                    dut.errormessage = "Cap start over 10min"
+                    dut.errormessage = "Cap start over time"
                     logger.info("dut: {0} capacitor: {1} message: {2} ".
                         format(dut.slotnum, dut.capacitance_measured,
                                dut.errormessage))

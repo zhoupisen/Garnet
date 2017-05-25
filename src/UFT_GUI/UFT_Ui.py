@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '.\UFT_Ui.ui'
+# Form implementation generated from reading ui file 'UFT_Ui.ui'
 #
-# Created: Fri Aug 28 14:39:05 2015
-#      by: PyQt4 UI code generator 4.11.2
+# Created: Thu May 25 10:58:35 2017
+#      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -424,7 +424,7 @@ class Ui_Form(object):
         self.search_lineEdit.setPlaceholderText(_translate("Form", "search by serial number", None))
         self.search_pushButton.setText(_translate("Form", "Search", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("Form", "test log", None))
-        self.title_label.setText(_translate("Form", "AGIGA GARNET PGEM UFT V3.1", None))
+        self.title_label.setText(_translate("Form", "AGIGA UPGEM UFT V4.0", None))
         self.groupBox_1.setTitle(_translate("Form", "Slot #1", None))
         self.sn_lineEdit_1.setPlaceholderText(_translate("Form", "Serial Number", None))
         self.CablelineEdit_1.setPlaceholderText(_translate("Form", "Cable_SN_1", None))
@@ -440,13 +440,3 @@ class Ui_Form(object):
         self.start_pushButton.setText(_translate("Form", "START", None))
 
 from matplotlibwidget import MatplotlibWidget
-
-if __name__ == "__main__":
-    import sys
-    app = QtGui.QApplication(sys.argv)
-    Form = QtGui.QWidget()
-    ui = Ui_Form()
-    ui.setupUi(Form)
-    Form.show()
-    sys.exit(app.exec_())
-

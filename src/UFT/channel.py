@@ -513,6 +513,14 @@ class Channel(threading.Thread):
                 if dut.status != DUT_STATUS.Idle:
                     continue
                 self.switch_to_dut(dut.slotnum)
+
+                config = load_test_item(self.config_list[dut.slotnum],
+                                "Capacitor")
+                if config.has_key("Overtime"):
+                    overtime=float(config["Overtime"])
+                else:
+                    overtime=600
+
                 self.adk.slave_addr = 0x14
                 val = self.adk.read_reg(0x23,0x01)[0]
                 logger.info("PGEMSTAT.BIT2: {0}".format(val))
@@ -523,12 +531,6 @@ class Channel(threading.Thread):
                     val1 = dut.read_vpd_byaddress(0x100)[0] #`````````````````````````read cap vale from VPD``````````compare````````````````````````````
                     logger.info("capacitance_measured value: {0}".format(val1))
                     dut.capacitance_measured=val1
-                    config = load_test_item(self.config_list[dut.slotnum],
-                                    "Capacitor")
-                    if (config.has_key("Overtime")):
-                        overtime=float(config["Overtime"])
-                    else:
-                        overtime=600
                     if not (config["min"] < val1 < config["max"]):
                         dut.status=DUT_STATUS.Fail
                         dut.errormessage = "Cap is over limits"

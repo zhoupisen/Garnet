@@ -18,14 +18,22 @@ EEP_MAP = [{"name": "MODEL", "addr": 0x000, "length": 16, "type": "str"},
            {"name": "ES_FWREV0", "addr": 0x010, "length": 1, "type": "int"},
            {"name": "ES_FWREV1", "addr": 0x011, "length": 1, "type": "int"},
            {"name": "ES_HWREV", "addr": 0x012, "length": 1, "type": "int"},
-           {"name": "CAPPN", "addr": 0x020, "length": 12, "type": "str"},
+           {"name": "CAPPN", "addr": 0x020, "length": 16, "type": "str"},
            {"name": "SN", "addr": 0x030, "length": 8, "type": "str"},
            {"name": "PCBVER", "addr": 0x040, "length": 2, "type": "str"},
            {"name": "MFDATE", "addr": 0x042, "length": 4, "type": "str"},
            {"name": "MFNAME", "addr": 0x046, "length": 2, "type": "str"},
-           {"name": "CINIT", "addr": 0x050, "length": 1, "type": "int"},
+           {"name": "CINIT", "addr": 0x050, "length": 2, "type": "int"},
            {"name": "MINTEMP", "addr": 0x060, "length": 1, "type": "int"},
            {"name": "MAXTEMP", "addr": 0x061, "length": 1, "type": "int"},
+           {"name": "ES_CHRGE_TIMEOUT", "addr": 0x080, "length": 2, "type": "int"},
+           {"name": "MIN_ES_OPERATING_TEMP", "addr": 0x082, "length": 1, "type": "int"},
+           {"name": "MAX_ES_OPERATING_TEMP", "addr": 0x083, "length": 1, "type": "int"},
+           {"name": "ES_TECH", "addr": 0x084, "length": 1, "type": "int"},
+           {"name": "SPECCAP", "addr": 0x085, "length": 2, "type": "int"},
+           {"name": "PID", "addr": 0x087, "length": 2, "type": "int"},
+           {"name": "VPD_REV", "addr": 0x0FD, "length": 1, "type": "int"},
+           {"name": "VPD_CRC", "addr": 0x0FE, "length": 2, "type": "int"},
            {"name": "LASTCAP", "addr": 0x100, "length": 1, "type": "int"},
            {"name": "MINCAP", "addr": 0x101, "length": 1, "type": "int"},
            {"name": "MAXCAP", "addr": 0x102, "length": 1, "type": "int"},
@@ -314,7 +322,7 @@ class PGEMBase(DUT):
         val2 = self.device.read_reg(0x21, length=1)[0]
         logger.info("GTG value: {0}".format(val2))
         logger.debug("GTG value: {0}".format(val2))
-        if ((val1|0xFE)==0xFE) & ((val2&0x83)==0x83):
+        if ((val1|0xFE)==0xFE) & ((val2&0x8B)==0x8B):
             return True
         else:
             return False

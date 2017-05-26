@@ -453,7 +453,7 @@
       <bool>false</bool>
      </property>
      <property name="text">
-      <string>AGIGA CORONADO PGEM UFT V1.2</string>
+      <string>AGIGA UPGEM UFT V4.0</string>
      </property>
      <property name="textFormat">
       <enum>Qt::AutoText</enum>

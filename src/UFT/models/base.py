@@ -312,6 +312,11 @@ class PGEMBase(DUT):
         # reset register
         self.device.write_reg(0x03, 0x01)
 
+    def shutdown_output(self):
+        self.device.slave_addr = 0x14
+        self.device.write_reg(0x06, 0xB4)
+        logger.info("Shutdown output")
+
 
     def charge_status(self):
         self.device.slave_addr = 0x14

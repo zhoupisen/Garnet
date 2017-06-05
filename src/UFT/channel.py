@@ -338,7 +338,7 @@ class Channel(threading.Thread):
                         (dut.status != DUT_STATUS.Discharging):
                     continue
 
-                if config.has_key("Shutdown"):
+                if "Shutdown" in config:
                     if config["Shutdown"]=="Yes":
                         shutdown=True
                 self.switch_to_dut(dut.slotnum)
@@ -418,6 +418,11 @@ class Channel(threading.Thread):
                 dut.write_vpd(config["File"], config["PGEMID"])
                 dut.read_vpd()
                 dut.program_vpd = 1
+                if "Flush_EE" in config:
+                    if config["Flush_EE"]=="Yes":
+                        dut.flush_ee()
+                        dut.reset_sys()
+
             except AssertionError:
                 dut.status = DUT_STATUS.Fail
                 dut.errormessage = "Programming VPD Fail"
@@ -523,7 +528,7 @@ class Channel(threading.Thread):
 
                 config = load_test_item(self.config_list[dut.slotnum],
                                 "Capacitor")
-                if config.has_key("Overtime"):
+                if "Overtime" in config:
                     overtime=float(config["Overtime"])
                 else:
                     overtime=600

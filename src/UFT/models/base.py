@@ -9,6 +9,7 @@ __all__ = ["PGEMBase"]
 import logging
 import struct
 import re
+import time
 from dut import DUT
 
 logger = logging.getLogger(__name__)
@@ -301,16 +302,34 @@ class PGEMBase(DUT):
         else:
             return False
 
+    def reset_minmax(self):
+        self.device.slave_addr = 0x14
+        self.device.write_reg(0x05, 0xE6)
+        logger.info("reset min max")
+        time.sleep(5)
+
+    def flush_ee(self):
+        self.device.slave_addr = 0x14
+        self.device.write_reg(0x41, 0x3A)
+        logger.info("flush eeprom")
+        time.sleep(1)
+
     def reset_sys(self):
         self.device.slave_addr = 0x14
         # reset register
         self.device.write_reg(0x04, 0xF4)
+        logger.info("reset system")
         time.sleep(5)
 
     def start_cap(self):
         self.device.slave_addr = 0x14
         # reset register
         self.device.write_reg(0x03, 0x01)
+
+    def shutdown_output(self):
+        self.device.slave_addr = 0x14
+        self.device.write_reg(0x06, 0xB4)
+        logger.info("Shutdown output")
 
 
     def charge_status(self):
@@ -322,7 +341,7 @@ class PGEMBase(DUT):
         val2 = self.device.read_reg(0x21, length=1)[0]
         logger.info("GTG value: {0}".format(val2))
         logger.debug("GTG value: {0}".format(val2))
-        if ((val1|0xFE)==0xFE) & ((val2&0x8B)==0x8B):
+        if ((val1|0xFE)==0xFE) & ((val2&0x09)==0x09):
             return True
         else:
             return False

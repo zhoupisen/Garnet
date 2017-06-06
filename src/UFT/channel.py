@@ -338,9 +338,8 @@ class Channel(threading.Thread):
                         (dut.status != DUT_STATUS.Discharging):
                     continue
 
-                if "Shutdown" in config:
-                    if config["Shutdown"]=="Yes":
-                        shutdown=True
+                if config.get("Shutdown",False)=="Yes":
+                    shutdown=True
                 self.switch_to_dut(dut.slotnum)
                 # cap_in_ltc = dut.meas_capacitor()
                 # print cap_in_ltc
@@ -418,10 +417,9 @@ class Channel(threading.Thread):
                 dut.write_vpd(config["File"], config["PGEMID"])
                 dut.read_vpd()
                 dut.program_vpd = 1
-                if "Flush_EE" in config:
-                    if config["Flush_EE"]=="Yes":
-                        dut.flush_ee()
-                        dut.reset_sys()
+                if config.get("Flush_EE",False)=="Yes":
+                    dut.flush_ee()
+                    dut.reset_sys()
 
             except AssertionError:
                 dut.status = DUT_STATUS.Fail

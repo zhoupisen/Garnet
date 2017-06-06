@@ -500,6 +500,7 @@ class Channel(threading.Thread):
             self.switch_to_dut(dut.slotnum)
             dut.start_cap()
             time.sleep(1)
+            dut.status = DUT_STATUS.Cap_Measuring
             logger.info("started cap measure")
 
         #close load and set PS
@@ -520,7 +521,7 @@ class Channel(threading.Thread):
             for dut in self.dut_list:
                 if dut is None:
                     continue
-                if dut.status != DUT_STATUS.Idle:
+                if dut.status != DUT_STATUS.Cap_Measuring:
                     continue
                 self.switch_to_dut(dut.slotnum)
 
@@ -563,7 +564,7 @@ class Channel(threading.Thread):
             all_cap_ready=True
             if dut is None:
                 continue
-            if dut.status != DUT_STATUS.Idle:
+            if dut.status != DUT_STATUS.Cap_Measuring:
                 continue
             self.switch_to_dut(dut.slotnum)
             self.adk.slave_addr = 0x14
@@ -578,6 +579,8 @@ class Channel(threading.Thread):
             if not (temp==0x00):
                 dut.status = DUT_STATUS.Fail
                 dut.errormessage = "GTG_warning != 0x00"
+            else:
+                dut.status = DUT_STATUS.Idle    # pass
 
     def save_db(self):
         # setup database

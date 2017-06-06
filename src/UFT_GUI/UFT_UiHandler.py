@@ -178,11 +178,13 @@ class UFT_UiHandler(UFT_UiForm):
             pass
 
     def set_status_text(self, slotnum, status):
-        status_list = ["Idle", "Pass", "Fail", "Charging", "Discharging"]
+        status_list = ["Idle", "Pass", "Fail", "Charging", "Discharging", "Self_Discharging", "Cap_Measuring"]
         label = [self.label_1, self.label_2, self.label_3, self.label_4]
         color_list = ["background-color: wheat",
                       "background-color: green",
                       "background-color: red",
+                      "background-color: yellow",
+                      "background-color: yellow",
                       "background-color: yellow",
                       "background-color: yellow"]
         label[slotnum].setText(status_list[status])

@@ -26,6 +26,7 @@ class DUT_STATUS(object):
     Charging = 3
     Discharging = 4
     Self_Discharging = 5
+    Cap_Measuring = 6
 
 
 class DUT(SQLBase):

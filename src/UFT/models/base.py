@@ -302,6 +302,30 @@ class PGEMBase(DUT):
         else:
             return False
 
+    def read_PGEMSTAT(self, bit=None):
+        self.device.slave_addr = 0x14
+        if(bit==None):
+            val = self.device.read_reg(0x23, 0x01)
+        else:
+            val = self.device.read_reg(0x23, 0x01)[bit]
+        return val
+
+    def read_GTG(self, bit=None):
+        self.device.slave_addr = 0x14
+        if(bit==None):
+            val = self.device.read_reg(0x21, 0x01)
+        else:
+            val = self.device.read_reg(0x21, 0x01)[bit]
+        return val
+
+    def read_GTG_WARN(self, bit=None):
+        self.device.slave_addr = 0x14
+        if(bit==None):
+            val = self.device.read_reg(0x22, 0x01)
+        else:
+            val = self.device.read_reg(0x22, 0x01)[bit]
+        return val
+
     def reset_minmax(self):
         self.device.slave_addr = 0x14
         self.device.write_reg(0x05, 0xE6)

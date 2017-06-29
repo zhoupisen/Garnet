@@ -532,8 +532,9 @@ class Channel(threading.Thread):
                 else:
                     overtime=600
 
-                self.adk.slave_addr = 0x14
-                val = self.adk.read_reg(0x23,0x01)[0]
+                #self.adk.slave_addr = 0x14
+                #val = self.adk.read_reg(0x23,0x01)[0]
+                val = dut.read_PGEMSTAT(0)
                 logger.info("PGEMSTAT.BIT2: {0}".format(val))
                 vcap_temp=dut.meas_vcap()
                 logger.info("dut: {0} vcap in cap calculate: {1}".format(dut.slotnum,vcap_temp))
@@ -567,14 +568,16 @@ class Channel(threading.Thread):
             if dut.status != DUT_STATUS.Cap_Measuring:
                 continue
             self.switch_to_dut(dut.slotnum)
-            self.adk.slave_addr = 0x14
-            val = self.adk.read_reg(0x21,0x01)[0]
+            #self.adk.slave_addr = 0x14
+            #val = self.adk.read_reg(0x21,0x01)[0]
+            val = dut.read_GTG(0)
             if not((val&0x02)==0x02):
                 dut.status=DUT_STATUS.Fail
                 dut.errormessage = "GTG.bit1 ==0 "
                 logger.info("GTG.bit1 ==0")
             # check GTG_WARNING == 0x00
-            temp=self.adk.read_reg(0x22)[0]
+            #temp=self.adk.read_reg(0x22)[0]
+            temp = dut.val = dut.read_GTG_WARN(0)
             logger.info("GTG_Warning value: {0}".format(temp))
             if not (temp==0x00):
                 dut.status = DUT_STATUS.Fail

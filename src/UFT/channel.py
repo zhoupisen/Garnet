@@ -598,7 +598,7 @@ class Channel(threading.Thread):
                 logger.info("GTG.bit1 ==0")
             # check GTG_WARNING == 0x00
             #temp=self.adk.read_reg(0x22)[0]
-            temp = dut.val = dut.read_GTG_WARN(0)
+            temp = dut.read_GTG_WARN(0)
             logger.info("GTG_Warning value: {0}".format(temp))
             if not (temp==0x00):
                 dut.status = DUT_STATUS.Fail

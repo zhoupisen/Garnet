@@ -426,10 +426,11 @@ class Channel(threading.Thread):
             if (config["stoponfail"]) & (dut.status != DUT_STATUS.Idle):
                 continue
             self.switch_to_dut(dut.slotnum)
-            if not dut.read_hwready():
-                time.sleep(5)
 
             try:
+                if not dut.read_hwready():
+                    time.sleep(5)
+
                 dut.write_vpd(config["File"], config["PGEMID"])
                 dut.read_vpd()
                 dut.program_vpd = 1

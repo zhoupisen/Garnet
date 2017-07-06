@@ -237,59 +237,67 @@ class Channel(threading.Thread):
         while (not all_charged):
             all_charged = True
             for dut in self.dut_list:
-                if dut is None:
-                    continue
-                config = load_test_item(self.config_list[dut.slotnum],
-                                        "Charge")
-                if (not config["enable"]):
-                    continue
-                if (config["stoponfail"]) & \
-                        (dut.status != DUT_STATUS.Charging):
-                    continue
-                self.switch_to_dut(dut.slotnum)
-                if not dut.read_hwready():
-                    time.sleep(5)
-                this_cycle = Cycle()
-                this_cycle.vin = dut.meas_vin()
-                this_cycle.counter = self.counter
-                this_cycle.time = time.time()
                 try:
-                    temperature = dut.check_temp()
+                    if dut is None:
+                        continue
+                    config = load_test_item(self.config_list[dut.slotnum],
+                                            "Charge")
+                    if (not config["enable"]):
+                        continue
+                    if (config["stoponfail"]) & \
+                            (dut.status != DUT_STATUS.Charging):
+                        continue
+                    self.switch_to_dut(dut.slotnum)
+                    if not dut.read_hwready():
+                        time.sleep(5)
+                    this_cycle = Cycle()
+                    this_cycle.vin = dut.meas_vin()
+                    this_cycle.counter = self.counter
+                    this_cycle.time = time.time()
+                    try:
+                        temperature = dut.check_temp()
+                    except aardvark.USBI2CAdapterException:
+                        # temp ic not ready
+                        temperature = 0
+                    this_cycle.temp = temperature
+                    this_cycle.state = "charge"
+                    self.counter += 1
+
+                    self.ld.select_channel(dut.slotnum)
+                    this_cycle.vcap = dut.meas_vcap()
+
+                    threshold = float(config["Threshold"].strip("aAvV"))
+                    ceiling = float(config["Ceiling"].strip("aAvV"))
+                    max_chargetime = config["max"]
+                    min_chargetime = config["min"]
+
+                    charge_time = this_cycle.time - start_time
+                    dut.charge_time = charge_time
+                    if (charge_time > max_chargetime):
+                        all_charged &= True
+                        dut.status = DUT_STATUS.Fail
+                        dut.errormessage = "Charge Time Too Long."
+                    elif (dut.charge_status()):
+                        if(ceiling >dut.meas_vcap() >= threshold)&(max_chargetime>dut.charge_time>min_chargetime):  #dut.meas_chg_time()
+                            all_charged &= True
+                            dut.status = DUT_STATUS.Idle  # pass
+                        else:
+                            dut.status = DUT_STATUS.Fail
+                            dut.errormessage = "Charge Time or Vcap failed"
+                    else:
+                        all_charged &= False
+                    dut.cycles.append(this_cycle)
+                    logger.info("dut: {0} status: {1} vcap: {2} "
+                                "temp: {3} message: {4} ".
+                                format(dut.slotnum, dut.status, this_cycle.vcap,
+                                       this_cycle.temp, dut.errormessage))
                 except aardvark.USBI2CAdapterException:
-                    # temp ic not ready
-                    temperature = 0
-                this_cycle.temp = temperature
-                this_cycle.state = "charge"
-                self.counter += 1
-
-                self.ld.select_channel(dut.slotnum)
-                this_cycle.vcap = dut.meas_vcap()
-
-                threshold = float(config["Threshold"].strip("aAvV"))
-                ceiling = float(config["Ceiling"].strip("aAvV"))
-                max_chargetime = config["max"]
-                min_chargetime = config["min"]
-
-                charge_time = this_cycle.time - start_time
-                dut.charge_time = charge_time
-                if (charge_time > max_chargetime):
+                    logger.info("dut: {0} IIC access failed.".
+                                format(dut.slotnum))
                     all_charged &= True
                     dut.status = DUT_STATUS.Fail
-                    dut.errormessage = "Charge Time Too Long."
-                elif (dut.charge_status()):
-                    if(ceiling >dut.meas_vcap() >= threshold)&(max_chargetime>dut.charge_time>min_chargetime):  #dut.meas_chg_time()
-                        all_charged &= True
-                        dut.status = DUT_STATUS.Idle  # pass
-                    else:
-                        dut.status = DUT_STATUS.Fail
-                        dut.errormessage = "Charge Time or Vcap failed"
-                else:
-                    all_charged &= False
-                dut.cycles.append(this_cycle)
-                logger.info("dut: {0} status: {1} vcap: {2} "
-                            "temp: {3} message: {4} ".
-                            format(dut.slotnum, dut.status, this_cycle.vcap,
-                                   this_cycle.temp, dut.errormessage))
+                    dut.errormessage = "IIC access failed."
+
             time.sleep(INTERVAL)
 
     def discharge_dut(self):
@@ -327,69 +335,77 @@ class Channel(threading.Thread):
         while (not all_discharged):
             all_discharged = True
             for dut in self.dut_list:
-                shutdown=False
-                if dut is None:
-                    continue
-                config = load_test_item(self.config_list[dut.slotnum],
-                                        "Discharge")
-                if (not config["enable"]):
-                    continue
-                if (config["stoponfail"]) & \
-                        (dut.status != DUT_STATUS.Discharging):
-                    continue
-
-                if config.get("Shutdown",False)=="Yes":
-                    shutdown=True
-                self.switch_to_dut(dut.slotnum)
-                # cap_in_ltc = dut.meas_capacitor()
-                # print cap_in_ltc
-                this_cycle = Cycle()
-                this_cycle.vin = dut.meas_vin()
                 try:
-                    temperature = dut.check_temp()
-                except aardvark.USBI2CAdapterException:
-                    # temp ic not ready
-                    temperature = 0
-                this_cycle.temp = temperature
-                this_cycle.counter = self.counter
-                this_cycle.time = time.time()
+                    shutdown=False
+                    if dut is None:
+                        continue
+                    config = load_test_item(self.config_list[dut.slotnum],
+                                            "Discharge")
+                    if (not config["enable"]):
+                        continue
+                    if (config["stoponfail"]) & \
+                            (dut.status != DUT_STATUS.Discharging):
+                        continue
 
-                this_cycle.state = "discharge"
-                self.ld.select_channel(dut.slotnum)
-                this_cycle.vcap = dut.meas_vcap()
-                # this_cycle.vcap = self.ld.read_volt()
-                self.counter += 1
+                    if config.get("Shutdown",False)=="Yes":
+                        shutdown=True
+                    self.switch_to_dut(dut.slotnum)
+                    # cap_in_ltc = dut.meas_capacitor()
+                    # print cap_in_ltc
+                    this_cycle = Cycle()
+                    this_cycle.vin = dut.meas_vin()
+                    try:
+                        temperature = dut.check_temp()
+                    except aardvark.USBI2CAdapterException:
+                        # temp ic not ready
+                        temperature = 0
+                    this_cycle.temp = temperature
+                    this_cycle.counter = self.counter
+                    this_cycle.time = time.time()
 
-                threshold = float(config["Threshold"].strip("aAvV"))
-                max_dischargetime = config["max"]
-                min_dischargetime = config["min"]
-
-                discharge_time = this_cycle.time - start_time
-                dut.discharge_time = discharge_time
-                if (discharge_time > max_dischargetime):
-                    all_discharged &= True
+                    this_cycle.state = "discharge"
                     self.ld.select_channel(dut.slotnum)
-                    self.ld.input_off()
-                    dut.status = DUT_STATUS.Fail
-                    dut.errormessage = "Discharge Time Too Long."
-                elif (this_cycle.vcap < threshold):
-                    all_discharged &= True
-                    self.ld.select_channel(dut.slotnum)
-                    self.ld.input_off()
-                    if (discharge_time < min_dischargetime):
+                    this_cycle.vcap = dut.meas_vcap()
+                    # this_cycle.vcap = self.ld.read_volt()
+                    self.counter += 1
+
+                    threshold = float(config["Threshold"].strip("aAvV"))
+                    max_dischargetime = config["max"]
+                    min_dischargetime = config["min"]
+
+                    discharge_time = this_cycle.time - start_time
+                    dut.discharge_time = discharge_time
+                    if (discharge_time > max_dischargetime):
+                        all_discharged &= True
+                        self.ld.select_channel(dut.slotnum)
+                        self.ld.input_off()
                         dut.status = DUT_STATUS.Fail
-                        dut.errormessage = "Discharge Time Too Short."
+                        dut.errormessage = "Discharge Time Too Long."
+                    elif (this_cycle.vcap < threshold):
+                        all_discharged &= True
+                        self.ld.select_channel(dut.slotnum)
+                        self.ld.input_off()
+                        if (discharge_time < min_dischargetime):
+                            dut.status = DUT_STATUS.Fail
+                            dut.errormessage = "Discharge Time Too Short."
+                        else:
+                            if (shutdown==True):
+                                dut.shutdown_output()
+                            dut.status = DUT_STATUS.Idle  # pass
                     else:
-                        if (shutdown==True):
-                            dut.shutdown_output()
-                        dut.status = DUT_STATUS.Idle  # pass
-                else:
-                    all_discharged &= False
-                dut.cycles.append(this_cycle)
-                logger.info("dut: {0} status: {1} vcap: {2} "
-                            "temp: {3} message: {4} ".
-                            format(dut.slotnum, dut.status, this_cycle.vcap,
-                                   this_cycle.temp, dut.errormessage))
+                        all_discharged &= False
+                    dut.cycles.append(this_cycle)
+                    logger.info("dut: {0} status: {1} vcap: {2} "
+                                "temp: {3} message: {4} ".
+                                format(dut.slotnum, dut.status, this_cycle.vcap,
+                                       this_cycle.temp, dut.errormessage))
+                except aardvark.USBI2CAdapterException:
+                    logger.info("dut: {0} IIC access failed.".
+                                format(dut.slotnum))
+                    all_discharged &= True
+                    dut.status = DUT_STATUS.Fail
+                    dut.errormessage = "IIC access failed."
+
             #time.sleep(0)
         self.ps.setVolt(PS_VOLT)
 
@@ -410,10 +426,11 @@ class Channel(threading.Thread):
             if (config["stoponfail"]) & (dut.status != DUT_STATUS.Idle):
                 continue
             self.switch_to_dut(dut.slotnum)
-            if not dut.read_hwready():
-                time.sleep(5)
 
             try:
+                if not dut.read_hwready():
+                    time.sleep(5)
+
                 dut.write_vpd(config["File"], config["PGEMID"])
                 dut.read_vpd()
                 dut.program_vpd = 1
@@ -427,6 +444,11 @@ class Channel(threading.Thread):
                 logger.info("dut: {0} status: {1} message: {2} ".
                             format(dut.slotnum, dut.status, dut.errormessage))
 
+            except aardvark.USBI2CAdapterException:
+                dut.status = DUT_STATUS.Fail
+                dut.errormessage = "IIC access failed"
+                logger.info("dut: {0} status: {1} message: {2} ".
+                            format(dut.slotnum, dut.status, dut.errormessage))
 
 
     def check_temperature_dut(self):
@@ -532,8 +554,9 @@ class Channel(threading.Thread):
                 else:
                     overtime=600
 
-                self.adk.slave_addr = 0x14
-                val = self.adk.read_reg(0x23,0x01)[0]
+                #self.adk.slave_addr = 0x14
+                #val = self.adk.read_reg(0x23,0x01)[0]
+                val = dut.read_PGEMSTAT(0)
                 logger.info("PGEMSTAT.BIT2: {0}".format(val))
                 vcap_temp=dut.meas_vcap()
                 logger.info("dut: {0} vcap in cap calculate: {1}".format(dut.slotnum,vcap_temp))
@@ -567,14 +590,16 @@ class Channel(threading.Thread):
             if dut.status != DUT_STATUS.Cap_Measuring:
                 continue
             self.switch_to_dut(dut.slotnum)
-            self.adk.slave_addr = 0x14
-            val = self.adk.read_reg(0x21,0x01)[0]
+            #self.adk.slave_addr = 0x14
+            #val = self.adk.read_reg(0x21,0x01)[0]
+            val = dut.read_GTG(0)
             if not((val&0x02)==0x02):
                 dut.status=DUT_STATUS.Fail
                 dut.errormessage = "GTG.bit1 ==0 "
                 logger.info("GTG.bit1 ==0")
             # check GTG_WARNING == 0x00
-            temp=self.adk.read_reg(0x22)[0]
+            #temp=self.adk.read_reg(0x22)[0]
+            temp = dut.read_GTG_WARN(0)
             logger.info("GTG_Warning value: {0}".format(temp))
             if not (temp==0x00):
                 dut.status = DUT_STATUS.Fail

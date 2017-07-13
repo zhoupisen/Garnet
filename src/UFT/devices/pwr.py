@@ -13,9 +13,6 @@ import re
 import logging
 import time
 
-vid = 0x0b3e  # kikusui PIA4850 vendor id
-pid = 0x1014  # kikusui PIA4850 product id
-
 logger = logging.getLogger(__name__)
 
 
@@ -24,92 +21,53 @@ class PowerSupplyException(Exception):
 
 
 class PowerSupply(object):
+
+    OccupyPort = 0
+
     def __init__(self):
-        try:
-            self.instr = usbtmc.Instrument(vid, pid)
-        except Exception as e:
-            raise PowerSupplyException("Power Supply Not Found.")
-
-        try:
-            # clean err msg
-            errmsg = self.instr.ask("ERR?")
-            while (errmsg != "0"):
-                errmsg = self.instr.ask("ERR?")
-        except:
-            pass
-
-        idn = self.instr.ask("*IDN?")
-        if re.match(r"KIKUSUI[\w|\s|\.|,]+PIA4850", idn):
-            logger.info("Power Supply Found: " + idn)
-        else:
-            raise PowerSupplyException("No power supply found.")
+        pass
 
     def __del__(self):
-        try:
-            self.close()
-        except:
-            pass
+        pass
 
     def close(self):
-        self.instr.close()
+        raise NotImplementedError()
 
     def reset(self):
-        self.instr.write("*RST")
+        raise NotImplementedError()
 
     def _checkerr(self):
-        errmsg = self.instr.ask("ERR?")
-        while (errmsg != "0"):
-            self.reset()
-            raise PowerSupplyException(errmsg)
+        raise NotImplementedError()
 
     def selectChannel(self, node, ch):
-        self.instr.write("NODE {0}".format(node))
-        self.instr.write("CH {0}".format(ch))
-        time.sleep(1)
-        self._checkerr()
+        OccupyPort = ch
 
     def measureVolt(self):
-        volt = self.instr.ask("VOUT?")
-        v = float(volt.strip())
-        self._checkerr()
-        return v
+        raise NotImplementedError()
 
     def measureCurr(self):
-        curr = self.instr.ask("IOUT?")
-        c = float(curr.strip())
-        self._checkerr()
-        return c
+        raise NotImplementedError()
 
     def set(self, params):
-        self.instr.write("VSET {0}".format(params["volt"]))
-        self.instr.write("ISET {0}".format(params["curr"]))
-        self.instr.write("OVSET {0}".format(params["ovp"]))
-        self.instr.write("OCSET {0}".format(params["ocp"]))
-        self._checkerr()
+        raise NotImplementedError()
 
     def setVolt(self, volt):
-        self.instr.write("VSET {0}".format(volt))
-        self._checkerr()
+        raise NotImplementedError()
 
     def setCurr(self, curr):
-        self.instr.write("ISET {0}".format(curr))
-        self._checkerr()
+        raise NotImplementedError()
 
     def setOVP(self, ovp):
-        self.instr.write("OVSET {0}".format(ovp))
-        self._checkerr()
+        raise NotImplementedError()
 
     def setOCP(self, ocp):
-        self.instr.write("OCSET {0}".format(ocp))
-        self._checkerr()
+        raise NotImplementedError()
 
     def activateOutput(self):
-        self.instr.write("OUT 1")
-        self._checkerr()
+        pass
 
     def deactivateOutput(self):
-        self.instr.write("OUT 0")
-        self._checkerr()
+        pass
 
 
 if __name__ == "__main__":

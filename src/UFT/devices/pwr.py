@@ -24,7 +24,8 @@ class PowerSupply(object):
 
     OccupyPort = 0
 
-    def __init__(self):
+    def __init__(self, device):
+        self.device = device
         pass
 
     def __del__(self):
@@ -39,7 +40,7 @@ class PowerSupply(object):
     def _checkerr(self):
         raise NotImplementedError()
 
-    def selectChannel(self, node, ch):
+    def selectChannel(self, ch):
         OccupyPort = ch
 
     def measureVolt(self):
@@ -64,24 +65,9 @@ class PowerSupply(object):
         raise NotImplementedError()
 
     def activateOutput(self):
+        self.device.OutputOn(self.OccupyPort)
         pass
 
     def deactivateOutput(self):
+        self.device.OutputOff(self.OccupyPort)
         pass
-
-
-if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
-
-    ps = PowerSupply()
-    logger.debug("Communicate to Node 5:")
-    ps.selectChannel(node=5, ch=1)
-    logger.debug("Set voltage and current:")
-    setting = {"volt": 12.0, "curr": 2, "ovp": 13.0, "ocp": 3.0}
-    ps.set(setting)
-    ps.activateOutput()
-    time.sleep(2)
-    logger.debug(ps.measureVolt())
-    logger.debug(ps.measureCurr())
-    time.sleep(2)
-    ps.deactivateOutput()

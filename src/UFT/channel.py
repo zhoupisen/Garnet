@@ -4,30 +4,12 @@
 Currently supports 4 duts in parallel.
 """
 
-from UFT.config import PS_VOLT
-from UFT.config import RESULT_LOG
-from UFT.config import RESULT_DB
-from UFT.config import SD_COUNTER
-from UFT.config import START_VOLT
-from UFT.config import CONFIG_DB
-from UFT.config import DIAMOND4_LIST
-from UFT.config import PS_OCP
-from UFT.config import PS_OVP
-from UFT.config import PS_CURR
-from UFT.config import PS_CHAN
-from UFT.config import PS_ADDR
-from UFT.config import TOTAL_SLOTNUM
-from UFT.config import LD_DELAY
-from UFT.config import LD_PORT
-from UFT.config import ADK_PORT
-from UFT.config import INTERVAL
-
-
 __version__ = "0.1"
 __author__ = "@fanmuzhi, @boqiling"
 __all__ = ["Channel", "ChannelStates"]
 
 from UFT.devices import pwr, load, aardvark
+from UFT.devices import erie
 from UFT.models import DUT_STATUS, DUT, Cycle, PGEMBase, Diamond4
 from UFT.backend import load_config, load_test_item
 from UFT.backend.session import SessionManager
@@ -60,12 +42,16 @@ class ChannelStates(object):
 
 
 class Channel(threading.Thread):
+
+    #first setup erie
+    erie = erie.Erie()
+
     # aardvark
     adk = aardvark.Adapter(portnum=ADK_PORT)
     # setup load
-    ld = load.DCLoad(port=LD_PORT, timeout=LD_DELAY)
+    ld = load.DCLoad(erie)
     # setup main power supply
-    ps = pwr.PowerSupply()
+    ps = pwr.PowerSupply(erie)
 
     def __init__(self, name, barcode_list, cable_barcodes_list, channel_id=0):
         """initialize channel
@@ -109,26 +95,30 @@ class Channel(threading.Thread):
         :return: None.
         """
          # setup load
-        self.ld.reset()
+        #self.ld.reset()
         time.sleep(2)
         for slot in range(TOTAL_SLOTNUM):
             self.ld.select_channel(slot)
             self.ld.input_off()
             time.sleep(1)
-            self.ld.protect_on()
-            self.ld.change_func(load.DCLoad.ModeCURR)
+            #self.ld.protect_on()
+            #self.ld.change_func(load.DCLoad.ModeCURR)
             time.sleep(1)
 
+            self.ps.selectChannel(slot)
+            self.ps.activateOutput()
+
         # setup power supply
-        self.ps.selectChannel(node=PS_ADDR, ch=PS_CHAN)
+        #self.ps.selectChannel(node=PS_ADDR, ch=PS_CHAN)
 
         setting = {"volt": PS_VOLT, "curr": PS_CURR,
                    "ovp": PS_OVP, "ocp": PS_OCP}
-        self.ps.set(setting)
-        self.ps.activateOutput()
+        #self.ps.set(setting)
+        #self.ps.activateOutput()
         time.sleep(2)
-        volt = self.ps.measureVolt()
-        curr = self.ps.measureCurr()
+        #volt = self.ps.measureVolt()
+        #curr = self.ps.measureCurr()
+        '''
         if not ((PS_VOLT - 1) < volt < (PS_VOLT + 1)):
             self.ps.setVolt(0.0)
             logging.error("Power Supply Voltage {0} "
@@ -139,6 +129,7 @@ class Channel(threading.Thread):
             logging.error("Power Supply Current {0} "
                           "is not in range".format(volt))
             raise AssertionError("Power supply current is not in range")
+        '''
 
         # setup dut_list
         for i, bc in enumerate(self.barcode_list):
@@ -163,48 +154,6 @@ class Channel(threading.Thread):
                 # dut is not loaded on fixture
                 self.dut_list.append(None)
                 self.config_list.append(None)
-
-
-    def reset_dut(self):
-        """disable all charge and self-discharge, enable auto-discharge.
-        just like the dut is not present.
-        :return: None
-        """
-        for dut in self.dut_list:
-            if dut is not None:
-                self.switch_to_dut(dut.slotnum)
-                # dut.write_ltc3350(0x17, 0x01)
-
-                # disable charge
-                dut.charge(status=False)
-
-                # enable auto discharge
-                self.switch_to_mb()
-                #self.auto_discharge(slot=dut.slotnum, status=True)
-
-                # empty the dut, one by one
-                self.switch_to_dut(dut.slotnum)
-                self.ld.select_channel(dut.slotnum)
-                # val = self.read_volt(dut)
-                self.ps.setVolt(0.0)
-                time.sleep(1.5)
-                val = self.ld.read_volt()
-                if (val > START_VOLT):
-                    # self.ps.setVolt(0.0)
-                    self.ld.set_curr(self.current)
-                    self.ld.input_on()
-                    time.sleep(1.5)
-                    dut.status = DUT_STATUS.Discharging
-                while (val > START_VOLT):
-                    # print "start_volt", val
-                    # self.ps.setVolt(0.0)
-                    # val = self.read_volt(dut)
-                    val = self.ld.read_volt()
-                    time.sleep(INTERVAL)
-                self.ps.setVolt(PS_VOLT)
-                time.sleep(1.5)
-                self.ld.input_off()
-                dut.status = DUT_STATUS.Idle
 
     def charge_dut(self):
         """charge
@@ -326,12 +275,17 @@ class Channel(threading.Thread):
             self.current = float(config["Current"].strip("aAvV"))
             self.ld.set_curr(self.current)  # set discharge current
             self.ld.input_on()
+
+            time.sleep(1)
+            self.ps.selectChannel(dut.slotnum)
+            self.ps.deactivateOutput()
+
             dut.status = DUT_STATUS.Discharging
 
         # start discharge cycle
         all_discharged = False
         start_time = time.time()
-        self.ps.setVolt(0.0)
+        #self.ps.setVolt(0.0)
         while (not all_discharged):
             all_discharged = True
             for dut in self.dut_list:
@@ -407,7 +361,7 @@ class Channel(threading.Thread):
                     dut.errormessage = "IIC access failed."
 
             #time.sleep(0)
-        self.ps.setVolt(PS_VOLT)
+        #self.ps.setVolt(PS_VOLT)
 
 
 
@@ -525,15 +479,19 @@ class Channel(threading.Thread):
             dut.status = DUT_STATUS.Cap_Measuring
             logger.info("started cap measure")
 
+            time.sleep(2)
+            self.ps.selectChannel(dut.slotnum)
+            self.ps.activateOutput()
+
         #close load and set PS
-        self.ld.reset()
-        time.sleep(2)
+        #self.ld.reset()
+        #time.sleep(2)
         # setup power supply
-        self.ps.selectChannel(node=PS_ADDR, ch=PS_CHAN)
+        #self.ps.selectChannel(node=PS_ADDR, ch=PS_CHAN)
         setting = {"volt": PS_VOLT, "curr": PS_CURR,
                    "ovp": PS_OVP, "ocp": PS_OCP}
-        self.ps.set(setting)
-        self.ps.activateOutput()
+        #self.ps.set(setting)
+        #self.ps.activateOutput()
         time.sleep(2)
         start_time = time.time()
 
@@ -663,11 +621,14 @@ class Channel(threading.Thread):
             logger.info("TEST RESULT: dut {0} ===> {1}".format(
                 dut.slotnum, msg))
 
+            self.ps.selectChannel(dut.slotnum)
+            self.ps.deactivateOutput()
+
         # save to xml logs
         self.save_file()
 
         # power off
-        self.ps.deactivateOutput()
+        #self.ps.deactivateOutput()
 
     def run(self):
         """ override thread.run()

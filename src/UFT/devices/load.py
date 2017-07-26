@@ -23,7 +23,8 @@ class DCLoad(object):
 
     OccupyPort = 0
 
-    def __init__(self, port='COM0', baudrate=9600, **kvargs):
+    def __init__(self, device):
+        self.device = device
         pass
 
     def __del__(self):
@@ -66,33 +67,9 @@ class DCLoad(object):
         raise NotImplementedError()
 
     def input_on(self):
+        self.device.InputOn(self.OccupyPort)
         pass
 
     def input_off(self):
+        self.device.InputOff(self.OccupyPort)
         pass
-
-
-if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
-
-    load = DCLoad(port="COM10", timeout=3)
-
-    for i in range(1):
-        load.select_channel(i)
-        load.input_off()
-        load.protect_on()
-
-        load.change_func(DCLoad.ModeCURR)
-        load.set_curr(0.8)
-
-        # load.change_func(DCLoad.ModeRes)
-        # load.set_res(20)     # 20 ohm
-
-        load.input_on()
-
-        print load.read_curr()
-        print load.read_volt()
-
-        time.sleep(2)
-        load.input_off()
-    print "finish."

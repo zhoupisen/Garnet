@@ -41,7 +41,7 @@ class PowerSupply(object):
         raise NotImplementedError()
 
     def selectChannel(self, ch):
-        OccupyPort = ch
+        self.OccupyPort = ch
 
     def measureVolt(self):
         raise NotImplementedError()

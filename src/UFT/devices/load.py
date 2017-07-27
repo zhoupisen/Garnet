@@ -43,7 +43,7 @@ class DCLoad(object):
         raise NotImplementedError()
 
     def select_channel(self, chnum):
-        OccupyPort = chnum
+        self.OccupyPort = chnum
 
     def change_func(self, mode):
         raise NotImplementedError()

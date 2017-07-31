@@ -25,17 +25,24 @@ class Erie(object):
 
     def InputOn(self, port):
         logger.info("Now I'm calling Erie")
-        #raise NotImplementedError()
+        raise NotImplementedError()
 
     def InputOff(self, port):
         logger.info("Now I'm calling Erie")
-        #raise NotImplementedError()
+        raise NotImplementedError()
 
     def OutputOn(self, port):
         logger.info("Now I'm calling Erie")
-        #raise NotImplementedError()
+        raise NotImplementedError()
 
     def OutputOff(self, port):
         logger.info("Now I'm calling Erie")
-        #raise NotImplementedError()
+        raise NotImplementedError()
 
+    def iic_write(self, port, address, length, data):
+        logger.info("Now I'm calling Erie")
+        raise NotImplementedError()
+
+    def iic_read(self, port, address, length, data):
+        logger.info("Now I'm calling Erie")
+        raise NotImplementedError()

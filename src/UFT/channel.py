@@ -47,7 +47,7 @@ class Channel(threading.Thread):
     erie = erie.Erie()
 
     # aardvark
-    adk = aardvark.Adapter(portnum=ADK_PORT)
+    adk = aardvark.Adapter(erie)
     # setup load
     ld = load.DCLoad(erie)
     # setup main power supply
@@ -170,7 +170,7 @@ class Channel(threading.Thread):
             if (config["stoponfail"]) & (dut.status != DUT_STATUS.Idle):
                 continue
             # disable auto discharge
-            self.switch_to_mb()
+            #self.switch_to_mb()
             #self.auto_discharge(slot=dut.slotnum, status=False)
             self.switch_to_dut(dut.slotnum)
 
@@ -263,7 +263,7 @@ class Channel(threading.Thread):
             if (config["stoponfail"]) & (dut.status != DUT_STATUS.Idle):
                 continue
             # disable auto discharge
-            self.switch_to_mb()
+            #self.switch_to_mb()
             #self.auto_discharge(slot=dut.slotnum, status=False)
             # disable self discharge
             self.switch_to_dut(dut.slotnum)
@@ -430,31 +430,7 @@ class Channel(threading.Thread):
 
 
     def switch_to_dut(self, slot):
-        """switch I2C ports by PCA9548A, only 1 channel is enabled.
-        chnum(channel number): 0~7
-        slotnum(slot number): 0~7
-        """
-        chnum = self.channel
-        self.adk.slave_addr = 0x70 + chnum  # 0111 0000
-        wdata = [0x01 << slot]
-
-        # Switch I2C connection to current PGEM
-        # Need call this function every time before communicate with PGEM
-        self.adk.write(wdata)
-
-    def switch_to_mb(self):
-        """switch I2C ports back to mother board
-           chnum(channel number): 0~7
-        """
-        chnum = self.channel
-        self.adk.slave_addr = 0x70 + chnum  # 0111 0000
-        wdata = 0x00
-
-        # Switch I2C connection to mother board
-        # Need call this function every time before communicate with
-        # mother board
-        self.adk.write(wdata)
-
+        self.adk.select_channel(slot)
 
     
     def calculate_capacitance(self):

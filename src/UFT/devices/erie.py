@@ -8,41 +8,59 @@ __author__ = 'dqli'
 __all__ = ["erie"]
 
 import serial
-import re
 import logging
-import time
 
 logger = logging.getLogger(__name__)
+debugOut = True
 
 
 class Erie(object):
 
-    def __init__(self):
-        pass
+    def __init__(self, port='COM1', baudrate=9600, **kvargs):
+        timeout = kvargs.get('timeout', 5)
+        parity = kvargs.get('parity', serial.PARITY_NONE)
+        bytesize = kvargs.get('bytesize', serial.EIGHTBITS)
+        stopbits = kvargs.get('stopbits', serial.STOPBITS_ONE)
+        self.ser = serial.Serial(port=port, baudrate=baudrate,
+                                 timeout=timeout, bytesize=bytesize,
+                                 parity=parity, stopbits=stopbits)
+        if (not self.ser.isOpen()):
+            self.ser.open()
 
     def __del__(self):
-        pass
+        self.ser.close()
+
+
+    def _logging_(self, info):
+        if debugOut == True:
+            logger.info(info)
 
     def InputOn(self, port):
-        logger.info("Now I'm calling Erie")
-        raise NotImplementedError()
+        self._logging_("Now I'm calling Erie")
+        #raise NotImplementedError()
 
     def InputOff(self, port):
-        logger.info("Now I'm calling Erie")
-        raise NotImplementedError()
+        self._logging_("Now I'm calling Erie")
+        #raise NotImplementedError()
 
     def OutputOn(self, port):
-        logger.info("Now I'm calling Erie")
-        raise NotImplementedError()
+        self._logging_("Now I'm calling Erie")
+        #raise NotImplementedError()
 
     def OutputOff(self, port):
-        logger.info("Now I'm calling Erie")
-        raise NotImplementedError()
+        self._logging_("Now I'm calling Erie")
+        #raise NotImplementedError()
 
     def iic_write(self, port, address, length, data):
-        logger.info("Now I'm calling Erie")
+        self._logging_("Now I'm calling Erie")
         raise NotImplementedError()
 
     def iic_read(self, port, address, length, data):
-        logger.info("Now I'm calling Erie")
+        self._logging_("Now I'm calling Erie")
         raise NotImplementedError()
+
+    def _transfercommand_(self):
+        pass
+
+    def _receiveresult_(self):
+        pass

@@ -44,7 +44,7 @@ class ChannelStates(object):
 class Channel(threading.Thread):
 
     #first setup erie
-    erie = erie.Erie()
+    erie = erie.Erie(port=ERIE_PORT)
 
     # aardvark
     adk = aardvark.Adapter(erie)

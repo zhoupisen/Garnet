@@ -49,6 +49,9 @@ ADK_PORT = 0
 LD_PORT = "COM5"
 LD_DELAY = 3
 
+# erie board settings
+ERIE_PORT = "COM5"
+
 # self discharge counter
 SD_COUNTER = 10
 

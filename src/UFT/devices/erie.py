@@ -36,19 +36,20 @@ class Erie(object):
             logger.info(info)
 
     def InputOn(self, port):
-        self._logging_("Now I'm calling Erie")
+        self._logging_("set load on")
         #raise NotImplementedError()
 
     def InputOff(self, port):
-        self._logging_("Now I'm calling Erie")
+        self._logging_("set load off")
         #raise NotImplementedError()
 
     def OutputOn(self, port):
-        self._logging_("Now I'm calling Erie")
-        #raise NotImplementedError()
+        self._logging_("set power on")
+        cmd = 0x05;
+        self._transfercommand_(port, cmd)
 
     def OutputOff(self, port):
-        self._logging_("Now I'm calling Erie")
+        self._logging_("set power off")
         #raise NotImplementedError()
 
     def iic_write(self, port, address, length, data):
@@ -59,8 +60,15 @@ class Erie(object):
         self._logging_("Now I'm calling Erie")
         raise NotImplementedError()
 
-    def _transfercommand_(self):
-        pass
+    def _transfercommand_(self, port, cmd, datalen = 0, data = None):
+        header0 = 0x55;
+        header1 = 0x77;
+        content = chr(header0)+chr(header1)+chr(cmd) + chr(port)
+        if (datalen != 0) & (data is not None):
+            for d in data:
+                content += chr(d)
+        self._logging_("Transfering content = %s" % content)
+        self.ser.write(content)
 
     def _receiveresult_(self):
         pass

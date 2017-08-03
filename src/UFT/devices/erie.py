@@ -7,12 +7,13 @@ __version__ = "0.0.1"
 __author__ = 'dqli'
 __all__ = ["erie"]
 
-import serial
+import serial, time
 import logging
 
 logger = logging.getLogger(__name__)
 debugOut = True
 Group = 0
+DELAY4ERIE = 3
 
 
 class Erie(object):
@@ -74,10 +75,16 @@ class Erie(object):
         header1 = 0x77
         content = chr(header0) + chr(header1) + chr(cmd) + chr(port)
         if (datalen != 0) & (data is not None):
+            content = ""
+            time.sleep(1)
             for d in data:
                 content += chr(d)
         self._displaylanguage_(content)
         self.ser.write(content)
 
     def _receiveresult_(self):
-        pass
+        time.sleep(DELAY4ERIE)  # wait for response
+        buff = ''
+        while (self.ser.inWaiting() > 0):
+            buff += self.ser.read(1)
+        return buff

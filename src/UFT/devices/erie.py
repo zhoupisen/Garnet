@@ -12,6 +12,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 debugOut = True
+Group = 0
 
 
 class Erie(object):
@@ -35,6 +36,13 @@ class Erie(object):
         if debugOut == True:
             logger.info(info)
 
+    def _displaylanguage_(self, content):
+        display = "  transfering language: "
+        for c in content:
+            tmp = ord(c)
+            display += "%x " % tmp
+        self._logging_(display)
+
     def InputOn(self, port):
         self._logging_("set load on")
         #raise NotImplementedError()
@@ -45,7 +53,7 @@ class Erie(object):
 
     def OutputOn(self, port):
         self._logging_("set power on")
-        cmd = 0x05;
+        cmd = 0x05
         self._transfercommand_(port, cmd)
 
     def OutputOff(self, port):
@@ -53,21 +61,22 @@ class Erie(object):
         #raise NotImplementedError()
 
     def iic_write(self, port, address, length, data):
-        self._logging_("Now I'm calling Erie")
+        self._logging_("write IIC data")
         raise NotImplementedError()
 
     def iic_read(self, port, address, length, data):
-        self._logging_("Now I'm calling Erie")
+        self._logging_("read IIC data")
         raise NotImplementedError()
 
     def _transfercommand_(self, port, cmd, datalen = 0, data = None):
-        header0 = 0x55;
-        header1 = 0x77;
-        content = chr(header0)+chr(header1)+chr(cmd) + chr(port)
+        port += Group * 4
+        header0 = 0x55
+        header1 = 0x77
+        content = chr(header0) + chr(header1) + chr(cmd) + chr(port)
         if (datalen != 0) & (data is not None):
             for d in data:
                 content += chr(d)
-        self._logging_("Transfering content = %s" % content)
+        self._displaylanguage_(content)
         self.ser.write(content)
 
     def _receiveresult_(self):

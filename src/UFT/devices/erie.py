@@ -56,6 +56,8 @@ class Erie(object):
         self._logging_("set power on")
         cmd = 0x05
         self._transfercommand_(port, cmd)
+        ret = self._receiveresult_()
+        self._displaylanguage_(ret)
 
     def OutputOff(self, port):
         self._logging_("set power off")

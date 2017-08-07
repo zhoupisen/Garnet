@@ -22,6 +22,7 @@ class DCLoadException(Exception):
 class DCLoad(object):
 
     OccupyPort = 0
+    LoadMode = 'low'
 
     def __init__(self, device):
         self.device = device
@@ -49,7 +50,10 @@ class DCLoad(object):
         raise NotImplementedError()
 
     def set_curr(self, curr):
-        pass
+        if curr > 1.2:
+            self.LoadMode = 'high'
+        else:
+            self.LoadMode = 'low'
 
     def read_curr(self):
         raise NotImplementedError()
@@ -67,7 +71,7 @@ class DCLoad(object):
         raise NotImplementedError()
 
     def input_on(self):
-        self.device.InputOn(self.OccupyPort)
+        self.device.InputOn(self.OccupyPort, self.LoadMode)
         pass
 
     def input_off(self):

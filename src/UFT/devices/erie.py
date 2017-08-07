@@ -13,13 +13,13 @@ import logging
 logger = logging.getLogger(__name__)
 debugOut = True
 Group = 0
-DELAY4ERIE = 3
+DELAY4ERIE = 1
 
 
 class Erie(object):
 
     def __init__(self, port='COM1', baudrate=115200, **kvargs):
-        timeout = kvargs.get('timeout', 5)
+        timeout = kvargs.get('timeout', 10)
         parity = kvargs.get('parity', serial.PARITY_NONE)
         bytesize = kvargs.get('bytesize', serial.EIGHTBITS)
         stopbits = kvargs.get('stopbits', serial.STOPBITS_ONE)
@@ -44,30 +44,53 @@ class Erie(object):
             display += "%x " % tmp
         self._logging_(display)
 
-    def InputOn(self, port):
-        self._logging_("set load on")
-        #raise NotImplementedError()
+    def InputOn(self, port, loadmode):
+        cmd = 0x0A
+        if loadmode == 'low':
+            self._logging_("set load on low current")
+            self._transfercommand_(port, cmd, 0x01, [0x00])
+        else:
+            self._logging_("set load on low current")
+            self._transfercommand_(port, cmd, 0x01, [0x01])
+
+        ret = self._receiveresult_()
+        if ret[2] != 0x0A or ret[-1] != 0x00:
+            raise Exception("UART communication failure")
 
     def InputOff(self, port):
         self._logging_("set load off")
-        #raise NotImplementedError()
+        cmd = 0x0B
+        self._transfercommand_(port, cmd)
+        ret = self._receiveresult_()
+        if ret[2] != 0x0B or ret[-1] != 0x00:
+            raise Exception("UART communication failure")
 
     def OutputOn(self, port):
         self._logging_("set power on")
         cmd = 0x05
         self._transfercommand_(port, cmd)
         ret = self._receiveresult_()
-        self._displaylanguage_(ret)
+        if ret[2] != 0x05 or ret[-1] != 0x00:
+            raise Exception("UART communication failure")
 
     def OutputOff(self, port):
         self._logging_("set power off")
-        #raise NotImplementedError()
+        cmd = 0x06
+        self._transfercommand_(port, cmd)
+        ret = self._receiveresult_()
+        if ret[2] != 0x06 or ret[-1] != 0x00:
+            raise Exception("UART communication failure")
 
     def iic_write(self, port, address, length, data):
+        if length != 1:
+            raise Exception("IIC length does not support")
         self._logging_("write IIC data")
         raise NotImplementedError()
 
     def iic_read(self, port, address, length, data):
+        if length != 1:
+            raise Exception("IIC length does not support")
+        data = []
         self._logging_("read IIC data")
         raise NotImplementedError()
 
@@ -76,17 +99,29 @@ class Erie(object):
         header0 = 0x55
         header1 = 0x77
         content = chr(header0) + chr(header1) + chr(cmd) + chr(port)
+        content += chr(datalen & 0xFF)
+        content += chr((datalen>>8) & 0xFF)
+
         if (datalen != 0) & (data is not None):
             content = ""
             time.sleep(1)
             for d in data:
                 content += chr(d)
+
         self._displaylanguage_(content)
         self.ser.write(content)
 
     def _receiveresult_(self):
         time.sleep(DELAY4ERIE)  # wait for response
-        buff = ''
+        buff = []
+        content = ""
         while (self.ser.inWaiting() > 0):
-            buff += self.ser.read(1)
+            tmp = self.ser.read(1)
+            buff.append(tmp)
+            content += tmp
+        if len(buff) == 0:
+            raise Exception("UART communication failure")
+        if buff[0] != 0x55 or buff[1] != 0x77:
+            raise Exception("UART communication failure")
+        self._displaylanguage_(content)
         return buff

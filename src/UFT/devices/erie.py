@@ -18,7 +18,7 @@ DELAY4ERIE = 3
 
 class Erie(object):
 
-    def __init__(self, port='COM1', baudrate=9600, **kvargs):
+    def __init__(self, port='COM1', baudrate=115200, **kvargs):
         timeout = kvargs.get('timeout', 5)
         parity = kvargs.get('parity', serial.PARITY_NONE)
         bytesize = kvargs.get('bytesize', serial.EIGHTBITS)

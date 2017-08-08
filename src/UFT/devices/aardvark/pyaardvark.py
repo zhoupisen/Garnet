@@ -72,31 +72,34 @@ class Adapter(object):
         '''write ata to slave address
         ata can be byte or array of byte
         '''
-        if (type(wata) == int):
-            ata_out = array('B', [wata])
-            length = 1
-        elif (type(wata) == list):
-            ata_out = array('B', wata)
-            length = len(wata)
-        else:
-            raise TypeError("i2c ata to be written is not valid")
+        #if (type(wata) == int):
+        #    ata_out = array('B', [wata])
+        #    length = 1
+        #elif (type(wata) == list):
+        #    ata_out = array('B', wata)
+        #    length = len(wata)
+        #else:
+        #    raise TypeError("i2c ata to be written is not valid")
+        length = len(wata)
+        ata_out=wata
         ret = self.device.iic_write(self.OccupyPort, self.slave_addr, length, ata_out)
 
         if (ret != 0):
             raise_i2c_ex()
 
-    def read(self, length):
+    def read(self, reg_addr, length):
         '''read 1 byte from slave address
         '''
         # read 1 byte each time for easy
         # length = 2
-        ata_in = array_u08(length)
+        #ata_in = array_u08(length)
+        ata_in = [reg_addr]
         ret = self.device.iic_read(self.OccupyPort, self.slave_addr, length, ata_in)
 
-        if (ret != 0):
-            raise_i2c_ex()
-        val = ata_in
-        return val
+        #if (ret != 0):
+            #raise_i2c_ex()
+        #val = ata_in
+        return ret
 
     def write_reg(self, reg_addr, wata):
         '''
@@ -122,10 +125,10 @@ class Adapter(object):
         reg_addr: register address offset
         '''
         val = DEFAULT_REG_VAL
-        self.write(reg_addr)
+        #self.write(reg_addr)
 
         # read register ata
-        val = self.read(length)
+        val = self.read(reg_addr, length)
         return val
 
     def sleep(self, ms):

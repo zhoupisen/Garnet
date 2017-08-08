@@ -82,17 +82,28 @@ class Erie(object):
             raise Exception("UART communication failure")
 
     def iic_write(self, port, address, length, data):
-        if length != 1:
+        if length != 2:
             raise Exception("IIC length does not support")
         self._logging_("write IIC data")
-        raise NotImplementedError()
+        cmd = 0x02
+        self._transfercommand_(port, cmd, 0x03, [address] + data)
+        ret = self._receiveresult_()
+        if ret[2] != 0x02 or ret[-1] != 0x00:
+            raise Exception("UART communication failure")
+        return 0
 
     def iic_read(self, port, address, length, data):
         if length != 1:
             raise Exception("IIC length does not support")
-        data = []
+        val = []
         self._logging_("read IIC data")
-        raise NotImplementedError()
+        cmd = 0x01
+        self._transfercommand_(port, cmd, 0x02, [address] + data)
+        ret = self._receiveresult_()
+        if ret[2] != 0x01 or ret[-2] != 0x00:
+            raise Exception("UART communication failure")
+        val.append(ret[-1])
+        return val
 
     def _transfercommand_(self, port, cmd, datalen = 0, data = None):
         port += Group * 4
@@ -103,8 +114,8 @@ class Erie(object):
         content += chr((datalen>>8) & 0xFF)
 
         if (datalen != 0) & (data is not None):
-            content = ""
-            time.sleep(1)
+            #content = ""
+            #time.sleep(1)
             for d in data:
                 content += chr(d)
 
@@ -117,11 +128,13 @@ class Erie(object):
         content = ""
         while (self.ser.inWaiting() > 0):
             tmp = self.ser.read(1)
-            buff.append(tmp)
+            buff.append(ord(tmp))
             content += tmp
+
+        self._displaylanguage_(content)
+        self._logging_(buff)
         if len(buff) == 0:
             raise Exception("UART communication failure")
         if buff[0] != 0x55 or buff[1] != 0x77:
             raise Exception("UART communication failure")
-        self._displaylanguage_(content)
         return buff

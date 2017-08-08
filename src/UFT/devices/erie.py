@@ -13,7 +13,7 @@ import logging
 logger = logging.getLogger(__name__)
 debugOut = True
 Group = 0
-DELAY4ERIE = 1
+DELAY4ERIE = 0.2
 
 
 class Erie(object):
@@ -28,6 +28,10 @@ class Erie(object):
                                  parity=parity, stopbits=stopbits)
         if (not self.ser.isOpen()):
             self.ser.open()
+            self.ser.flushInput()
+            self.ser.flushOutput()
+
+        self.GetVersion()
 
     def __del__(self):
         self.ser.close()
@@ -43,6 +47,16 @@ class Erie(object):
             tmp = ord(c)
             display += "%x " % tmp
         self._logging_(display)
+
+    def GetVersion(self):
+        self._logging_("Get firmware version")
+        cmd = 0x0C
+        self._transfercommand_(0x00, cmd)
+        ret = self._receiveresult_()
+        if ret[2] != 0x0C or ret[-3] != 0x00:
+            raise Exception("UART communication failure")
+        if ret[-1] != 0 or ret[-2] != 1:
+            raise Exception("Wrong Erie firmware version")
 
     def InputOn(self, port, loadmode):
         cmd = 0x0A
@@ -88,7 +102,8 @@ class Erie(object):
         cmd = 0x02
         self._transfercommand_(port, cmd, 0x03, [address] + data)
         ret = self._receiveresult_()
-        if ret[2] != 0x02 or ret[-1] != 0x00:
+        #if ret[2] != 0x02 or ret[-1] != 0x00:
+        if ret[2] != 0x02:
             raise Exception("UART communication failure")
         return 0
 
@@ -111,11 +126,9 @@ class Erie(object):
         header1 = 0x77
         content = chr(header0) + chr(header1) + chr(cmd) + chr(port)
         content += chr(datalen & 0xFF)
-        content += chr((datalen>>8) & 0xFF)
+        content += chr((datalen >> 8) & 0xFF)
 
         if (datalen != 0) & (data is not None):
-            #content = ""
-            #time.sleep(1)
             for d in data:
                 content += chr(d)
 
@@ -132,7 +145,6 @@ class Erie(object):
             content += tmp
 
         self._displaylanguage_(content)
-        self._logging_(buff)
         if len(buff) == 0:
             raise Exception("UART communication failure")
         if buff[0] != 0x55 or buff[1] != 0x77:

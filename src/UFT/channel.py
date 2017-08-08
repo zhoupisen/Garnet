@@ -106,7 +106,7 @@ class Channel(threading.Thread):
             time.sleep(1)
 
             self.ps.selectChannel(slot)
-            self.ps.activateOutput()
+            self.ps.deactivateOutput()
 
         # setup power supply
         #self.ps.selectChannel(node=PS_ADDR, ch=PS_CHAN)
@@ -151,6 +151,7 @@ class Channel(threading.Thread):
                                          dut.partnumber, dut.revision)
                 self.config_list.append(dut_config)
             else:
+                i += 1
                 # dut is not loaded on fixture
                 self.dut_list.append(None)
                 self.config_list.append(None)
@@ -173,6 +174,9 @@ class Channel(threading.Thread):
             #self.switch_to_mb()
             #self.auto_discharge(slot=dut.slotnum, status=False)
             self.switch_to_dut(dut.slotnum)
+
+            self.ps.selectChannel(dut.slotnum)
+            self.ps.activateOutput()
 
             # start charge
             dut.status = DUT_STATUS.Charging
@@ -270,15 +274,16 @@ class Channel(threading.Thread):
             #dut.self_discharge(status=False)
             # disable charge
             #dut.charge(status=False)
+            self.ps.selectChannel(dut.slotnum)
+            self.ps.deactivateOutput()
+
+            time.sleep(1)
 
             self.ld.select_channel(dut.slotnum)
             self.current = float(config["Current"].strip("aAvV"))
             self.ld.set_curr(self.current)  # set discharge current
             self.ld.input_on()
 
-            time.sleep(1)
-            self.ps.selectChannel(dut.slotnum)
-            self.ps.deactivateOutput()
 
             dut.status = DUT_STATUS.Discharging
 
@@ -369,6 +374,20 @@ class Channel(threading.Thread):
         """ program vpd of DUT.
         :return: None
         """
+
+        for dut in self.dut_list:
+            if dut is None:
+                continue
+            config = load_test_item(self.config_list[dut.slotnum],
+                                    "Program_VPD")
+            if (not config["enable"]):
+                continue
+            if (config["stoponfail"]) & (dut.status != DUT_STATUS.Idle):
+                continue
+            self.switch_to_dut(dut.slotnum)
+            self.ps.selectChannel(dut.slotnum)
+            self.ps.activateOutput()
+
         time.sleep(5)
         for dut in self.dut_list:
             if dut is None:

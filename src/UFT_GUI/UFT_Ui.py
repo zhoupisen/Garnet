@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'UFT_Ui.ui'
 #
-# Created: Mon Jul 03 08:59:29 2017
+# Created: Wed Aug 09 14:22:59 2017
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -424,7 +424,7 @@ class Ui_Form(object):
         self.search_lineEdit.setPlaceholderText(_translate("Form", "search by serial number", None))
         self.search_pushButton.setText(_translate("Form", "Search", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("Form", "test log", None))
-        self.title_label.setText(_translate("Form", "AGIGA UPGEM UFT V4.0.2", None))
+        self.title_label.setText(_translate("Form", "AGIGA UPGEM UFT V5.0.0", None))
         self.groupBox_1.setTitle(_translate("Form", "Slot #1", None))
         self.sn_lineEdit_1.setPlaceholderText(_translate("Form", "Serial Number", None))
         self.CablelineEdit_1.setPlaceholderText(_translate("Form", "Cable_SN_1", None))

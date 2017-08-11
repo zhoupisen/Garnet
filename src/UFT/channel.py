@@ -151,7 +151,6 @@ class Channel(threading.Thread):
                                          dut.partnumber, dut.revision)
                 self.config_list.append(dut_config)
             else:
-                i += 1
                 # dut is not loaded on fixture
                 self.dut_list.append(None)
                 self.config_list.append(None)

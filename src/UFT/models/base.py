@@ -139,6 +139,14 @@ class PGEMBase(DUT):
         val = self.device.read_reg(0x02)
         return val
 
+    def dump_vpd(self):
+        ret = []
+        self.device.slave_addr = 0x14
+        for i in range(0x000, 0xFFF):
+            ret.append(self.read_vpd_byaddress(i)[0])
+        logger.info(ret)
+        return ret
+
     def read_vpd(self):
         """method to read out EEPROM info from dut
         :return a dict of vpd names and values.

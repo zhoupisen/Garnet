@@ -153,20 +153,68 @@ class UFT_UiHandler(UFT_UiForm):
             self.sn_lineEdit_2.setDisabled(True)
             self.sn_lineEdit_3.setDisabled(True)
             self.sn_lineEdit_4.setDisabled(True)
+            self.sn_lineEdit_5.setDisabled(True)
+            self.sn_lineEdit_6.setDisabled(True)
+            self.sn_lineEdit_7.setDisabled(True)
+            self.sn_lineEdit_8.setDisabled(True)
+            self.sn_lineEdit_9.setDisabled(True)
+            self.sn_lineEdit_10.setDisabled(True)
+            self.sn_lineEdit_11.setDisabled(True)
+            self.sn_lineEdit_12.setDisabled(True)
+            self.sn_lineEdit_13.setDisabled(True)
+            self.sn_lineEdit_14.setDisabled(True)
+            self.sn_lineEdit_15.setDisabled(True)
+            self.sn_lineEdit_16.setDisabled(True)
             self.CablelineEdit_1.setDisabled(True)
             self.CablelineEdit_2.setDisabled(True)
             self.CablelineEdit_3.setDisabled(True)
             self.CablelineEdit_4.setDisabled(True)
+            self.CablelineEdit_5.setDisabled(True)
+            self.CablelineEdit_6.setDisabled(True)
+            self.CablelineEdit_7.setDisabled(True)
+            self.CablelineEdit_8.setDisabled(True)
+            self.CablelineEdit_9.setDisabled(True)
+            self.CablelineEdit_10.setDisabled(True)
+            self.CablelineEdit_11.setDisabled(True)
+            self.CablelineEdit_12.setDisabled(True)
+            self.CablelineEdit_13.setDisabled(True)
+            self.CablelineEdit_14.setDisabled(True)
+            self.CablelineEdit_15.setDisabled(True)
+            self.CablelineEdit_16.setDisabled(True)
         else:
             self.start_pushButton.setEnabled(True)
             self.sn_lineEdit_1.setEnabled(True)
             self.sn_lineEdit_2.setEnabled(True)
             self.sn_lineEdit_3.setEnabled(True)
             self.sn_lineEdit_4.setEnabled(True)
+            self.sn_lineEdit_5.setEnabled(True)
+            self.sn_lineEdit_6.setEnabled(True)
+            self.sn_lineEdit_7.setEnabled(True)
+            self.sn_lineEdit_8.setEnabled(True)
+            self.sn_lineEdit_9.setEnabled(True)
+            self.sn_lineEdit_10.setEnabled(True)
+            self.sn_lineEdit_11.setEnabled(True)
+            self.sn_lineEdit_12.setEnabled(True)
+            self.sn_lineEdit_13.setEnabled(True)
+            self.sn_lineEdit_14.setEnabled(True)
+            self.sn_lineEdit_15.setEnabled(True)
+            self.sn_lineEdit_16.setEnabled(True)
             self.CablelineEdit_1.setEnabled(True)
             self.CablelineEdit_2.setEnabled(True)
             self.CablelineEdit_3.setEnabled(True)
             self.CablelineEdit_4.setEnabled(True)
+            self.CablelineEdit_5.setEnabled(True)
+            self.CablelineEdit_6.setEnabled(True)
+            self.CablelineEdit_7.setEnabled(True)
+            self.CablelineEdit_8.setEnabled(True)
+            self.CablelineEdit_9.setEnabled(True)
+            self.CablelineEdit_10.setEnabled(True)
+            self.CablelineEdit_11.setEnabled(True)
+            self.CablelineEdit_12.setEnabled(True)
+            self.CablelineEdit_13.setEnabled(True)
+            self.CablelineEdit_14.setEnabled(True)
+            self.CablelineEdit_15.setEnabled(True)
+            self.CablelineEdit_16.setEnabled(True)
             self.sn_lineEdit_1.selectAll()
             self.sn_lineEdit_1.setFocus()
 
@@ -179,7 +227,8 @@ class UFT_UiHandler(UFT_UiForm):
 
     def set_status_text(self, slotnum, status):
         status_list = ["Idle", "Pass", "Fail", "Charging", "Discharging", "Self_Discharging", "Cap_Measuring"]
-        label = [self.label_1, self.label_2, self.label_3, self.label_4]
+        label = [self.label_1, self.label_2, self.label_3, self.label_4, self.label_5, self.label_6, self.label_7, self.label_8,
+                 self.label_9, self.label_10, self.label_11, self.label_12, self.label_13, self.label_14, self.label_15, self.label_16]
         color_list = ["background-color: wheat",
                       "background-color: green",
                       "background-color: red",
@@ -194,7 +243,19 @@ class UFT_UiHandler(UFT_UiForm):
         barcodes = [str(self.sn_lineEdit_1.text()),
                     str(self.sn_lineEdit_2.text()),
                     str(self.sn_lineEdit_3.text()),
-                    str(self.sn_lineEdit_4.text())]
+                    str(self.sn_lineEdit_4.text()),
+                    str(self.sn_lineEdit_5.text()),
+                    str(self.sn_lineEdit_6.text()),
+                    str(self.sn_lineEdit_7.text()),
+                    str(self.sn_lineEdit_8.text()),
+                    str(self.sn_lineEdit_9.text()),
+                    str(self.sn_lineEdit_10.text()),
+                    str(self.sn_lineEdit_11.text()),
+                    str(self.sn_lineEdit_12.text()),
+                    str(self.sn_lineEdit_13.text()),
+                    str(self.sn_lineEdit_14.text()),
+                    str(self.sn_lineEdit_15.text()),
+                    str(self.sn_lineEdit_16.text())]
         for i in barcodes:
             if not i:
                 i = ""
@@ -204,7 +265,19 @@ class UFT_UiHandler(UFT_UiForm):
         cabel_barcodes = [str(self.CablelineEdit_1.text()),
                           str(self.CablelineEdit_2.text()),
                           str(self.CablelineEdit_3.text()),
-                          str(self.CablelineEdit_4.text())]
+                          str(self.CablelineEdit_4.text()),
+                          str(self.CablelineEdit_5.text()),
+                          str(self.CablelineEdit_6.text()),
+                          str(self.CablelineEdit_7.text()),
+                          str(self.CablelineEdit_8.text()),
+                          str(self.CablelineEdit_9.text()),
+                          str(self.CablelineEdit_10.text()),
+                          str(self.CablelineEdit_11.text()),
+                          str(self.CablelineEdit_12.text()),
+                          str(self.CablelineEdit_13.text()),
+                          str(self.CablelineEdit_14.text()),
+                          str(self.CablelineEdit_15.text()),
+                          str(self.CablelineEdit_16.text())]
         for i in cabel_barcodes:
             if not i:
                 i = ""

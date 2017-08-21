@@ -108,6 +108,8 @@ class Channel(threading.Thread):
             self.ps.selectChannel(slot)
             self.ps.deactivateOutput()
 
+            self.erie.LedOff(slot)
+
         # setup power supply
         #self.ps.selectChannel(node=PS_ADDR, ch=PS_CHAN)
 
@@ -232,7 +234,11 @@ class Channel(threading.Thread):
                     elif (dut.charge_status()):
                         if(ceiling >dut.meas_vcap() >= threshold)&(max_chargetime>dut.charge_time>min_chargetime):  #dut.meas_chg_time()
                             all_charged &= True
-                            dut.status = DUT_STATUS.Idle  # pass
+                            if not self.erie.GetGTGPin(dut.slotnum):
+                                dut.status = DUT_STATUS.Fail
+                                dut.errormessage = "GTG Pin check failed"
+                            else:
+                                dut.status = DUT_STATUS.Idle  # pass
                         else:
                             dut.status = DUT_STATUS.Fail
                             dut.errormessage = "Charge Time or Vcap failed"
@@ -384,8 +390,16 @@ class Channel(threading.Thread):
             if (config["stoponfail"]) & (dut.status != DUT_STATUS.Idle):
                 continue
             self.switch_to_dut(dut.slotnum)
-            self.ps.selectChannel(dut.slotnum)
-            self.ps.activateOutput()
+
+            logger.info("Check PGEM Present Pin")
+            if not self.erie.GetPresentPin(dut.slotnum):
+                dut.status = DUT_STATUS.Fail
+                dut.errormessage = "PGEM Connection Issue"
+                logger.info("dut: {0} status: {1} message: {2} ".
+                            format(dut.slotnum, dut.status, dut.errormessage))
+            else:
+                self.ps.selectChannel(dut.slotnum)
+                self.ps.activateOutput()
 
         time.sleep(5)
         for dut in self.dut_list:
@@ -403,8 +417,9 @@ class Channel(threading.Thread):
                 if not dut.read_hwready():
                     time.sleep(5)
 
+                logger.info("dut: {0} start writing...".format(dut.slotnum))
                 dut.write_vpd(config["File"], config["PGEMID"])
-                dut.read_vpd()
+                #dut.read_vpd()
                 dut.program_vpd = 1
                 if config.get("Flush_EE",False)=="Yes":
                     dut.flush_ee()
@@ -611,6 +626,7 @@ class Channel(threading.Thread):
                 dut.status = DUT_STATUS.Pass
                 msg = "passed"
             else:
+                self.erie.LedOn(dut.slotnum)
                 msg = dut.errormessage
             logger.info("TEST RESULT: dut {0} ===> {1}".format(
                 dut.slotnum, msg))

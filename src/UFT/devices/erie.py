@@ -96,6 +96,46 @@ class Erie(object):
         if ret[2] != 0x06 or ret[6] != 0x00:
             raise Exception("UART communication failure")
 
+    def LedOn(self, port):
+        self._logging_("set LED on")
+        cmd = 0x08
+        self._transfercommand_(port, cmd)
+        ret = self._receiveresult_()
+        if ret[2] != 0x08 or ret[6] != 0x00:
+            raise Exception("UART communication failure")
+
+    def LedOff(self, port):
+        self._logging_("set LED off")
+        cmd = 0x09
+        self._transfercommand_(port, cmd)
+        ret = self._receiveresult_()
+        if ret[2] != 0x09 or ret[6] != 0x00:
+            raise Exception("UART communication failure")
+
+    def GetPresentPin(self, port):
+        self._logging_("Get Present Pin Status")
+        cmd = 0x03
+        self._transfercommand_(port, cmd)
+        ret = self._receiveresult_()
+        if ret[2] != 0x03 or ret[6] != 0x00:
+            raise Exception("UART communication failure")
+        if ret[7] == 0:
+            return True
+        else:
+            return False
+
+    def GetGTGPin(self, port):
+        self._logging_("Get GTG Pin Status")
+        cmd = 0x04
+        self._transfercommand_(port, cmd)
+        ret = self._receiveresult_()
+        if ret[2] != 0x04 or ret[6] != 0x00:
+            raise Exception("UART communication failure")
+        if ret[7] == 1:
+            return True
+        else:
+            return False
+
     def iic_write(self, port, address, length, data):
         if length != 2:
             raise Exception("IIC length does not support")

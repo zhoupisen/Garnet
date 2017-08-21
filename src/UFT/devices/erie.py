@@ -11,9 +11,10 @@ import serial, time
 import logging
 
 logger = logging.getLogger(__name__)
-debugOut = True
+debugOut = False
 Group = 0
-DELAY4ERIE = 0.2
+DELAY4ERIE = 0.1
+FirmwareVersion = [1, 0]
 
 
 class Erie(object):
@@ -53,10 +54,10 @@ class Erie(object):
         cmd = 0x0C
         self._transfercommand_(0x00, cmd)
         ret = self._receiveresult_()
-        if ret[2] != 0x0C or ret[-3] != 0x00:
+        if ret[2] != 0x0C or ret[6] != 0x00:
             raise Exception("UART communication failure")
-        if ret[-1] != 0 or ret[-2] != 1:
-            raise Exception("Wrong Erie firmware version")
+        if ret[7] != FirmwareVersion[0] or ret[8] != FirmwareVersion[1]:
+            raise Exception("Wrong Erie firmware version: " + str(ret[7]) + "." + str(ret[8]))
 
     def InputOn(self, port, loadmode):
         cmd = 0x0A
@@ -68,7 +69,7 @@ class Erie(object):
             self._transfercommand_(port, cmd, 0x01, [0x01])
 
         ret = self._receiveresult_()
-        if ret[2] != 0x0A or ret[-1] != 0x00:
+        if ret[2] != 0x0A or ret[6] != 0x00:
             raise Exception("UART communication failure")
 
     def InputOff(self, port):
@@ -76,7 +77,7 @@ class Erie(object):
         cmd = 0x0B
         self._transfercommand_(port, cmd)
         ret = self._receiveresult_()
-        if ret[2] != 0x0B or ret[-1] != 0x00:
+        if ret[2] != 0x0B or ret[6] != 0x00:
             raise Exception("UART communication failure")
 
     def OutputOn(self, port):
@@ -84,7 +85,7 @@ class Erie(object):
         cmd = 0x05
         self._transfercommand_(port, cmd)
         ret = self._receiveresult_()
-        if ret[2] != 0x05 or ret[-1] != 0x00:
+        if ret[2] != 0x05 or ret[6] != 0x00:
             raise Exception("UART communication failure")
 
     def OutputOff(self, port):
@@ -92,7 +93,7 @@ class Erie(object):
         cmd = 0x06
         self._transfercommand_(port, cmd)
         ret = self._receiveresult_()
-        if ret[2] != 0x06 or ret[-1] != 0x00:
+        if ret[2] != 0x06 or ret[6] != 0x00:
             raise Exception("UART communication failure")
 
     def iic_write(self, port, address, length, data):
@@ -102,7 +103,7 @@ class Erie(object):
         cmd = 0x02
         self._transfercommand_(port, cmd, 0x03, [address] + data)
         ret = self._receiveresult_()
-        #if ret[2] != 0x02 or ret[-1] != 0x00:
+        #if ret[2] != 0x02 or ret[6] != 0x00:
         if ret[2] != 0x02:
             raise Exception("UART communication failure")
         return 0
@@ -115,9 +116,9 @@ class Erie(object):
         cmd = 0x01
         self._transfercommand_(port, cmd, 0x02, [address] + data)
         ret = self._receiveresult_()
-        if ret[2] != 0x01 or ret[-2] != 0x00:
+        if ret[2] != 0x01 or ret[6] != 0x00:
             raise Exception("UART communication failure")
-        val.append(ret[-1])
+        val.append(ret[7])
         return val
 
     def _transfercommand_(self, port, cmd, datalen = 0, data = None):

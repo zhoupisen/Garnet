@@ -19,7 +19,7 @@ DIAMOND4_LIST = ["AGIGA9811-001BCA",
 
 # total slot number for one channel,
 # should be 4, 1 for debug
-TOTAL_SLOTNUM = 4
+TOTAL_SLOTNUM = 16
 
 # seconds to delay in charging and discharging,
 # increase value to reduce the data in database.

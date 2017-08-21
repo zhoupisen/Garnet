@@ -96,14 +96,14 @@ class Channel(threading.Thread):
         """
          # setup load
         #self.ld.reset()
-        time.sleep(2)
+        #time.sleep(2)
         for slot in range(TOTAL_SLOTNUM):
             self.ld.select_channel(slot)
             self.ld.input_off()
-            time.sleep(1)
+            #time.sleep(1)
             #self.ld.protect_on()
             #self.ld.change_func(load.DCLoad.ModeCURR)
-            time.sleep(1)
+            #time.sleep(1)
 
             self.ps.selectChannel(slot)
             self.ps.deactivateOutput()
@@ -115,7 +115,7 @@ class Channel(threading.Thread):
                    "ovp": PS_OVP, "ocp": PS_OCP}
         #self.ps.set(setting)
         #self.ps.activateOutput()
-        time.sleep(2)
+        time.sleep(1)
         #volt = self.ps.measureVolt()
         #curr = self.ps.measureCurr()
         '''

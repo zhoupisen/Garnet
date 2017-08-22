@@ -9,6 +9,7 @@ __all__ = ["erie"]
 
 import serial, time
 import logging
+from UFT.devices import aardvark
 
 logger = logging.getLogger(__name__)
 debugOut = False
@@ -143,9 +144,9 @@ class Erie(object):
         cmd = 0x02
         self._transfercommand_(port, cmd, 0x03, [address] + data)
         ret = self._receiveresult_()
-        #if ret[2] != 0x02 or ret[6] != 0x00:
-        if ret[2] != 0x02:
-            raise Exception("UART communication failure")
+        if ret[2] != 0x02 or ret[6] != 0x00:
+        #if ret[2] != 0x02:
+            raise aardvark.USBI2CAdapterException("UART communication failure")
         return 0
 
     def iic_read(self, port, address, length, data):
@@ -157,7 +158,7 @@ class Erie(object):
         self._transfercommand_(port, cmd, 0x02, [address] + data)
         ret = self._receiveresult_()
         if ret[2] != 0x01 or ret[6] != 0x00:
-            raise Exception("UART communication failure")
+            raise aardvark.USBI2CAdapterException("UART communication failure")
         val.append(ret[7])
         return val
 

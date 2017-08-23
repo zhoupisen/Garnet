@@ -14,7 +14,7 @@ from UFT.devices import aardvark
 logger = logging.getLogger(__name__)
 debugOut = False
 Group = 0
-DELAY4ERIE = 0.1
+DELAY4ERIE = 0.05
 FirmwareVersion = [1, 0]
 
 

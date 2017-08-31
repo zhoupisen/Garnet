@@ -60,6 +60,14 @@ class Erie(object):
         if ret[7] != FirmwareVersion[0] or ret[8] != FirmwareVersion[1]:
             raise Exception("Wrong Erie firmware version: " + str(ret[7]) + "." + str(ret[8]))
 
+    def SetProType(self, port, type):
+        self._logging_("set product type")
+        cmd = 0x00;
+        self._transfercommand_(port, cmd, 0x01, [type])
+        ret = self._receiveresult_()
+        if ret[2] != 0x00 or ret[6] != 0x00:
+            raise Exception("UART communication failure")
+
     def InputOn(self, port, loadmode):
         cmd = 0x0A
         if loadmode == 'low':
@@ -113,6 +121,24 @@ class Erie(object):
         if ret[2] != 0x09 or ret[6] != 0x00:
             raise Exception("UART communication failure")
 
+    def ResetDUT(self, port):
+        self._logging_("reset DUT")
+        cmd = 0x0d
+        self._transfercommand_(port, cmd)
+        time.sleep(5)
+        ret = self._receiveresult_()
+        if ret[2] != 0x0d or ret[6] != 0x00:
+            raise Exception("UART communication failure")
+
+    def ShutdownDUT(self, port):
+        self._logging_("shutdown DUT")
+        cmd = 0x0e
+        self._transfercommand_(port, cmd)
+        time.sleep(3)
+        ret = self._receiveresult_()
+        if ret[2] != 0x0e or ret[6] != 0x00:
+            raise Exception("UART communication failure")
+
     def GetPresentPin(self, port):
         self._logging_("Get Present Pin Status")
         cmd = 0x03
@@ -145,7 +171,6 @@ class Erie(object):
         self._transfercommand_(port, cmd, 0x03, [address] + data)
         ret = self._receiveresult_()
         if ret[2] != 0x02 or ret[6] != 0x00:
-        #if ret[2] != 0x02:
             raise aardvark.USBI2CAdapterException("UART communication failure")
         return 0
 

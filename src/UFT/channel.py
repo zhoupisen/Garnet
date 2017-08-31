@@ -152,10 +152,22 @@ class Channel(threading.Thread):
                 dut_config = load_config("sqlite:///" + CONFIG_DB,
                                          dut.partnumber, dut.revision)
                 self.config_list.append(dut_config)
+                self.set_productype(dut.slotnum, dut.producttype)
             else:
                 # dut is not loaded on fixture
                 self.dut_list.append(None)
                 self.config_list.append(None)
+
+    def set_productype(self, port, pt):
+        if pt == "AGIGA9821":
+            logger.info("dut: {0} PN: {1} setting type: Pearl family".format(port, pt))
+            self.erie.SetProType(port, 0x00)
+        if pt == "AGIGA9822" or pt == "AGIGA9823":
+            logger.info("dut: {0} PN: {1} setting type: Amber family ".format(port, pt))
+            self.erie.SetProType(port, 0x01)
+        if pt == "AGIGA9831":
+            logger.info("dut: {0} PN: {1} setting type: Garnet family ".format(port, pt))
+            self.erie.SetProType(port, 0x02)
 
     def charge_dut(self):
         """charge
@@ -354,7 +366,8 @@ class Channel(threading.Thread):
                             dut.errormessage = "Discharge Time Too Short."
                         else:
                             if (shutdown==True):
-                                dut.shutdown_output()
+                                #dut.shutdown_output()
+                                self.erie.ShutdownDUT(dut.slotnum)
                             dut.status = DUT_STATUS.Idle  # pass
                     else:
                         all_discharged &= False
@@ -372,8 +385,6 @@ class Channel(threading.Thread):
 
             #time.sleep(0)
         #self.ps.setVolt(PS_VOLT)
-
-
 
     def program_dut(self):
         """ program vpd of DUT.
@@ -423,7 +434,8 @@ class Channel(threading.Thread):
                 dut.program_vpd = 1
                 if config.get("Flush_EE",False)=="Yes":
                     dut.flush_ee()
-                    dut.reset_sys()
+                    #dut.reset_sys()
+                    self.erie.ResetDUT(dut.slotnum)
 
             except AssertionError:
                 dut.status = DUT_STATUS.Fail
@@ -436,7 +448,6 @@ class Channel(threading.Thread):
                 dut.errormessage = "IIC access failed"
                 logger.info("dut: {0} status: {1} message: {2} ".
                             format(dut.slotnum, dut.status, dut.errormessage))
-
 
     def check_temperature_dut(self):
         """
@@ -460,11 +471,8 @@ class Channel(threading.Thread):
                 logger.info("dut: {0} status: {1} message: {2} ".
                             format(dut.slotnum, dut.status, dut.errormessage))
 
-
-
     def switch_to_dut(self, slot):
         self.adk.select_channel(slot)
-
     
     def calculate_capacitance(self):
         """ calculate the capacitance of DUT, based on vcap list in discharging.

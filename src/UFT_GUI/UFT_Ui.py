@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'UFT_Ui.ui'
 #
-# Created: Fri Sep 01 10:38:21 2017
+# Created: Fri Sep 01 16:30:59 2017
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -680,6 +680,14 @@ class Ui_Form(object):
         self.label_16.setObjectName(_fromUtf8("label_16"))
         self.verticalLayout_16.addWidget(self.label_16)
         self.gridLayout.addWidget(self.groupBox16, 3, 3, 1, 1)
+        self.Mode4in1 = QtGui.QCheckBox(Form)
+        self.Mode4in1.setGeometry(QtCore.QRect(910, 10, 67, 17))
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Maximum, QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.Mode4in1.sizePolicy().hasHeightForWidth())
+        self.Mode4in1.setSizePolicy(sizePolicy)
+        self.Mode4in1.setObjectName(_fromUtf8("Mode4in1"))
 
         self.retranslateUi(Form)
         self.tabWidget.setCurrentIndex(0)
@@ -747,6 +755,18 @@ class Ui_Form(object):
         QtCore.QObject.connect(self.CablelineEdit_13, QtCore.SIGNAL(_fromUtf8("returnPressed()")), self.CablelineEdit_14.setFocus)
         QtCore.QObject.connect(self.CablelineEdit_14, QtCore.SIGNAL(_fromUtf8("returnPressed()")), self.CablelineEdit_15.setFocus)
         QtCore.QObject.connect(self.CablelineEdit_15, QtCore.SIGNAL(_fromUtf8("returnPressed()")), self.CablelineEdit_16.setFocus)
+        QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked(bool)")), self.groupBox2.setDisabled)
+        QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked(bool)")), self.groupBox3.setDisabled)
+        QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked(bool)")), self.groupBox4.setDisabled)
+        QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked(bool)")), self.groupBox6.setDisabled)
+        QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked(bool)")), self.groupBox7.setDisabled)
+        QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked(bool)")), self.groupBox8.setDisabled)
+        QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked(bool)")), self.groupBox10.setDisabled)
+        QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked(bool)")), self.groupBox11.setDisabled)
+        QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked(bool)")), self.groupBox12.setDisabled)
+        QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked(bool)")), self.groupBox14.setDisabled)
+        QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked(bool)")), self.groupBox15.setDisabled)
+        QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked(bool)")), self.groupBox16.setDisabled)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
@@ -771,7 +791,7 @@ class Ui_Form(object):
         self.search_lineEdit.setPlaceholderText(_translate("Form", "search by serial number", None))
         self.search_pushButton.setText(_translate("Form", "Search", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("Form", "test log", None))
-        self.title_label.setText(_translate("Form", "AGIGA UPGEM UFT V5.1.3", None))
+        self.title_label.setText(_translate("Form", "AGIGA UPGEM UFT V5.2.0", None))
         self.start_pushButton.setText(_translate("Form", "START", None))
         self.groupBox1.setTitle(_translate("Form", "Slot #1", None))
         self.sn_lineEdit_1.setPlaceholderText(_translate("Form", "Serial Number", None))
@@ -821,5 +841,6 @@ class Ui_Form(object):
         self.groupBox16.setTitle(_translate("Form", "Slot #16", None))
         self.sn_lineEdit_16.setPlaceholderText(_translate("Form", "Serial Number", None))
         self.CablelineEdit_16.setPlaceholderText(_translate("Form", "Cable_SN_16", None))
+        self.Mode4in1.setText(_translate("Form", "4 in 1", None))
 
 from matplotlibwidget import MatplotlibWidget

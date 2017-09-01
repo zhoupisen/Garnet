@@ -53,7 +53,7 @@ class Channel(threading.Thread):
     # setup main power supply
     ps = pwr.PowerSupply(erie)
 
-    def __init__(self, name, barcode_list, cable_barcodes_list, channel_id=0):
+    def __init__(self, name, barcode_list, cable_barcodes_list, mode4in1, channel_id=0):
         """initialize channel
         :param name: thread name
         :param barcode_list: list of 2D barcode of dut.
@@ -64,6 +64,9 @@ class Channel(threading.Thread):
         # 8 mother boards can be stacked from 0 to 7.
         # use 1 motherboard in default.
         self.channel = channel_id
+
+        # Amber 4x/e uses master port + shared port mode
+        self.InMode4in1 = mode4in1
 
         # setup dut_list
         self.dut_list = []
@@ -97,6 +100,9 @@ class Channel(threading.Thread):
          # setup load
         #self.ld.reset()
         #time.sleep(2)
+
+        logger.info("mode 4 in 1 is {0}".format(self.InMode4in1))
+
         for slot in range(TOTAL_SLOTNUM):
             self.ld.select_channel(slot)
             self.ld.input_off()

@@ -706,7 +706,8 @@ class Channel(threading.Thread):
             logger.info("TEST RESULT: dut {0} ===> {1}".format(
                 dut.slotnum, msg))
 
-            self.ps.selectChannel(dut.slotnum)
+        for slot in range(TOTAL_SLOTNUM):
+            self.ps.selectChannel(slot)
             self.ps.deactivateOutput()
 
         # save to xml logs

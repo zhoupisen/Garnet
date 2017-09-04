@@ -197,6 +197,13 @@ class Channel(threading.Thread):
             self.ps.selectChannel(dut.slotnum)
             self.ps.activateOutput()
 
+            if self.InMode4in1:
+                for i in range(1, 4):
+                    self.switch_to_dut(dut.slotnum + i)
+
+                    self.ps.selectChannel(dut.slotnum + i)
+                    self.ps.activateOutput()
+
             # start charge
             dut.status = DUT_STATUS.Charging
 
@@ -256,7 +263,20 @@ class Channel(threading.Thread):
                                 dut.status = DUT_STATUS.Fail
                                 dut.errormessage = "GTG Pin check failed"
                             else:
-                                dut.status = DUT_STATUS.Idle  # pass
+                                if self.InMode4in1:
+                                    all_GTG = True
+                                    for i in range(1, 4):
+                                        self.switch_to_dut(dut.slotnum + i)
+                                        if not self.erie.GetGTGPin(dut.slotnum + i):
+                                            all_GTG &= False
+
+                                    if all_GTG:
+                                        dut.status = DUT_STATUS.Idle  # pass
+                                    else:
+                                        dut.status = DUT_STATUS.Fail
+                                        dut.errormessage = "GTG Pin check failed"
+                                else:
+                                    dut.status = DUT_STATUS.Idle  # pass
                         else:
                             dut.status = DUT_STATUS.Fail
                             dut.errormessage = "Charge Time or Vcap failed"
@@ -307,6 +327,17 @@ class Channel(threading.Thread):
             self.ld.set_curr(self.current)  # set discharge current
             self.ld.input_on()
 
+            if self.InMode4in1:
+                for i in range(1, 4):
+                    self.switch_to_dut(dut.slotnum + i)
+
+                    self.ps.selectChannel(dut.slotnum + i)
+                    self.ps.deactivateOutput()
+
+                    self.ld.select_channel(dut.slotnum + i)
+                    self.current = float(config["Current"].strip("aAvV"))
+                    self.ld.set_curr(self.current)  # set discharge current
+                    self.ld.input_on()
 
             dut.status = DUT_STATUS.Discharging
 
@@ -408,7 +439,7 @@ class Channel(threading.Thread):
                 continue
             self.switch_to_dut(dut.slotnum)
 
-            logger.info("Check PGEM Present Pin")
+            logger.info("Check PGEM Present Pin for slot {0}".format(dut.slotnum))
             if not self.erie.GetPresentPin(dut.slotnum):
                 dut.status = DUT_STATUS.Fail
                 dut.errormessage = "PGEM Connection Issue"
@@ -417,6 +448,20 @@ class Channel(threading.Thread):
             else:
                 self.ps.selectChannel(dut.slotnum)
                 self.ps.activateOutput()
+
+            if self.InMode4in1:
+                for i in range(1, 4):
+                    self.switch_to_dut(dut.slotnum + i)
+
+                    logger.info("Check PGEM Present Pin for slot {0}".format(dut.slotnum + i))
+                    if not self.erie.GetPresentPin(dut.slotnum + i):
+                        dut.status = DUT_STATUS.Fail
+                        dut.errormessage = "PGEM Connection Issue"
+                        logger.info("dut: {0} status: {1} message: {2} ".
+                                    format(dut.slotnum, dut.status, dut.errormessage))
+                    else:
+                        self.ps.selectChannel(dut.slotnum + i)
+                        self.ps.activateOutput()
 
         time.sleep(5)
         for dut in self.dut_list:
@@ -435,10 +480,18 @@ class Channel(threading.Thread):
                     time.sleep(5)
 
                 logger.info("dut: {0} start writing...".format(dut.slotnum))
-                dut.write_vpd(config["File"], config["PGEMID"])
+                dut.write_vpd(config["File"])
+
+                if self.InMode4in1:
+                    for i in range(1, 4):
+                        logger.info("shared port: {0} start writing...".format(dut.slotnum + i))
+                        self.switch_to_dut(dut.slotnum + i)
+                        dut.write_shared_vpd(config["File"], i)
+
                 #dut.read_vpd()
                 dut.program_vpd = 1
                 if config.get("Flush_EE",False)=="Yes":
+                    self.switch_to_dut(dut.slotnum)
                     dut.flush_ee()
                     #dut.reset_sys()
                     self.erie.ResetDUT(dut.slotnum)
@@ -496,15 +549,23 @@ class Channel(threading.Thread):
                 continue
             if dut.status != DUT_STATUS.Idle:
                 continue
+
+            self.ps.selectChannel(dut.slotnum)
+            self.ps.activateOutput()
+
+            if self.InMode4in1:
+                for i in range(1, 4):
+                    self.switch_to_dut(dut.slotnum + i)
+
+                    self.ps.selectChannel(dut.slotnum + i)
+                    self.ps.activateOutput()
+            time.sleep(2)
+
             self.switch_to_dut(dut.slotnum)
             dut.start_cap()
             time.sleep(1)
             dut.status = DUT_STATUS.Cap_Measuring
             logger.info("started cap measure")
-
-            time.sleep(2)
-            self.ps.selectChannel(dut.slotnum)
-            self.ps.activateOutput()
 
         #close load and set PS
         #self.ld.reset()

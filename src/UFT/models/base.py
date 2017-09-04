@@ -130,6 +130,39 @@ class PGEMBase(DUT):
                 val += datas[i] << 8 * i
         return val
 
+    def read_eep_byname(self, reg_name, portnum):
+        """method to read eep_data according to eep_name
+        eep is one dict in eep_map, for example:
+        {"name": "CINT", "addr": 0x02B3, "length": 1, "type": "int"}
+        :param reg_name: register name, e.g. "PCA"
+        :return value of the register
+        """
+        eep = self._query_map(EEP_MAP, name=reg_name)[0]
+        start = eep["addr"]  # start_address
+        length = eep["length"]  # length
+        typ = eep["type"]  # type
+        datas=[]
+        self.device.slave_addr = 0x53 + portnum
+        for i in range(length):
+            #self.device.write_reg(0x00,(start+i) & 0xFF)
+            #self.device.write_reg(0x01,((start+i)>>8) & 0xFF)
+            #print start+i
+            #self.device.sleep(5)
+            temp=self.device.read_reg((start+i) & 0xFF)
+            datas.append(temp[0])
+
+        if (typ == "word"):
+            val = 0
+            for i in range(0, len(datas)):
+                val += datas[i] << 8 * i
+        if (typ == "str"):
+            val = ''.join(chr(i) for i in datas)
+        if (typ == "int"):
+            val = 0
+            for i in range(0, len(datas)):
+                val += datas[i] << 8 * i
+        return val
+
     def read_vpd_byaddress(self, address):
         """method to read eep_data according to eep_address
         :return value of the register
@@ -181,7 +214,7 @@ class PGEMBase(DUT):
         self.device.sleep(5)
         self.device.write_reg(0x02,data & 0xFF)
 
-    def write_vpd(self, filepath, write_id):
+    def write_vpd(self, filepath):
         """method to write barcode information to PGEM EEPROM
         :param filepath: the ebf file location.
         """
@@ -220,6 +253,45 @@ class PGEMBase(DUT):
                self.read_vpd_byname("MFDATE")
         assert self.barcode_dict["VV"] == self.read_vpd_byname("MFNAME")
 
+    def write_shared_vpd(self, filepath, potnum):
+        """method to write barcode information to PGEM EEPROM
+        :param filepath: the ebf file location.
+        """
+        buffebf = self.load_bin_file(filepath)
+        # [ord(x) for x in string]
+        id = [ord(x) for x in self.barcode_dict['ID']]
+        yyww = [ord(x) for x in (self.barcode_dict['YY'] +
+                                 self.barcode_dict['WW'])]
+        vv = [ord(x) for x in self.barcode_dict['VV']]
+
+        # id == SN == Product Serial Number
+        eep = self._query_map(EEP_MAP, name="SN")[0]
+        buffebf[eep["addr"]: eep["addr"] + eep["length"]] = id
+
+        # yyww == MFDATE == Manufacture Date YY WW
+        eep = self._query_map(EEP_MAP, name="MFDATE")[0]
+        buffebf[eep["addr"]: eep["addr"] + eep["length"]] = yyww
+
+        # vv == ENDUSR == Manufacturer Name
+        eep = self._query_map(EEP_MAP, name="MFNAME")[0]
+        buffebf[eep["addr"]: eep["addr"] + eep["length"]] = vv
+
+        self.device.slave_addr = (0x53 + potnum)
+        # can be start with 0x41, 0x00 for ensurance.
+        #self.device.write_reg(0x40,0x45) # enable EEP write
+
+        for i in range(0x00, len(buffebf)):
+            #self.write_vpd_byaddress(i, buffebf[i])
+            self.device.write_reg(i, buffebf[i] & 0xFF)
+            self.device.sleep(5)
+            #print str(i)
+            #print buffebf[i]
+        # readback to check
+        #print self.barcode_dict
+        assert self.barcode_dict["ID"] == self.read_eep_byname("SN", potnum)
+        assert (self.barcode_dict["YY"] + self.barcode_dict["WW"]) == \
+               self.read_eep_byname("MFDATE", potnum)
+        assert self.barcode_dict["VV"] == self.read_eep_byname("MFNAME", potnum)
 
     def control_led(self, status="off"):
         """method to control the LED on DUT chip PCA9536DP

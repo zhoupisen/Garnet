@@ -101,7 +101,7 @@ class Channel(threading.Thread):
         #self.ld.reset()
         #time.sleep(2)
 
-        logger.info("mode 4 in 1 is {0}".format(self.InMode4in1))
+        logger.info("mode 4in1 is {0}".format(self.InMode4in1))
 
         for slot in range(TOTAL_SLOTNUM):
             self.ld.select_channel(slot)
@@ -151,6 +151,9 @@ class Channel(threading.Thread):
                     dut = Diamond4(device=self.adk,
                                    slot=i,
                                    barcode=bc)
+                if self.InMode4in1:
+                    if dut.partnumber not in Mode4in1_PN:
+                        raise Exception("This partnumber {0} does not support Mode4in1".format(dut.partnumber))
                 dut.status = DUT_STATUS.Idle
                 dut.cable_barcode = self.cable_barcodes_list[i]
                 dut.testdate = datetime.datetime.utcnow()

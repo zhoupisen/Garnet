@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 debugOut = False
 Group = 0
 DELAY4ERIE = 0.05
-FirmwareVersion = [1, 0]
+FirmwareVersion = [1, 1]
 
 
 class Erie(object):

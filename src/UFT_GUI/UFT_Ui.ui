@@ -53,7 +53,7 @@
      <property name="title">
       <string>item picture</string>
      </property>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -124,7 +124,7 @@
        <x>10</x>
        <y>10</y>
        <width>351</width>
-       <height>741</height>
+       <height>651</height>
       </rect>
      </property>
      <property name="sizePolicy">
@@ -140,9 +140,9 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>13</y>
+        <y>20</y>
         <width>331</width>
-        <height>631</height>
+        <height>621</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -551,7 +551,7 @@
    <property name="title">
     <string>Slot #4</string>
    </property>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -611,7 +611,7 @@
    <property name="title">
     <string>Slot #10</string>
    </property>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -671,7 +671,7 @@
    <property name="title">
     <string>Slot #1</string>
    </property>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>11</x>
@@ -737,7 +737,7 @@
    <property name="title">
     <string>Slot #2</string>
    </property>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -797,7 +797,7 @@
    <property name="title">
     <string>Slot #3</string>
    </property>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -857,7 +857,7 @@
    <property name="title">
     <string>Slot #5</string>
    </property>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -923,7 +923,7 @@
    <property name="title">
     <string>Slot #6</string>
    </property>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -983,7 +983,7 @@
    <property name="title">
     <string>Slot #7</string>
    </property>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -1043,7 +1043,7 @@
    <property name="title">
     <string>Slot #8</string>
    </property>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -1103,7 +1103,7 @@
    <property name="title">
     <string>Slot #9</string>
    </property>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -1169,7 +1169,7 @@
    <property name="title">
     <string>Slot #11</string>
    </property>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -1229,7 +1229,7 @@
    <property name="title">
     <string>Slot #12</string>
    </property>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -1289,7 +1289,7 @@
    <property name="title">
     <string>Slot #13</string>
    </property>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -1355,7 +1355,7 @@
    <property name="title">
     <string>Slot #14</string>
    </property>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -1415,7 +1415,7 @@
    <property name="title">
     <string>Slot #15</string>
    </property>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -1475,7 +1475,7 @@
    <property name="title">
     <string>Slot #16</string>
    </property>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>

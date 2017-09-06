@@ -14,7 +14,7 @@ from UFT.devices import aardvark
 logger = logging.getLogger(__name__)
 debugOut = False
 Group = 0
-DELAY4ERIE = 0.05
+DELAY4ERIE = 0.06
 FirmwareVersion = [1, 1]
 
 
@@ -30,8 +30,7 @@ class Erie(object):
                                  parity=parity, stopbits=stopbits)
         if (not self.ser.isOpen()):
             self.ser.open()
-            self.ser.flushInput()
-            self.ser.flushOutput()
+            self._cleanbuffer_()
 
         self.GetVersion()
 
@@ -187,6 +186,10 @@ class Erie(object):
         val.append(ret[7])
         return val
 
+    def _cleanbuffer_(self):
+        self.ser.flushInput()
+        self.ser.flushOutput()
+
     def _transfercommand_(self, port, cmd, datalen = 0, data = None):
         port += Group * 4
         header0 = 0x55
@@ -200,6 +203,7 @@ class Erie(object):
                 content += chr(d)
 
         self._displaylanguage_(content)
+        self._cleanbuffer_()
         self.ser.write(content)
 
     def _receiveresult_(self):

@@ -262,24 +262,7 @@ class Channel(threading.Thread):
                     elif (dut.charge_status()):
                         if(ceiling >dut.meas_vcap() >= threshold)&(max_chargetime>dut.charge_time>min_chargetime):  #dut.meas_chg_time()
                             all_charged &= True
-                            if not self.erie.GetGTGPin(dut.slotnum):
-                                dut.status = DUT_STATUS.Fail
-                                dut.errormessage = "GTG Pin check failed"
-                            else:
-                                if self.InMode4in1:
-                                    all_GTG = True
-                                    for i in range(1, 4):
-                                        self.switch_to_dut(dut.slotnum + i)
-                                        if not self.erie.GetGTGPin(dut.slotnum + i):
-                                            all_GTG &= False
-
-                                    if all_GTG:
-                                        dut.status = DUT_STATUS.Idle  # pass
-                                    else:
-                                        dut.status = DUT_STATUS.Fail
-                                        dut.errormessage = "GTG Pin check failed"
-                                else:
-                                    dut.status = DUT_STATUS.Idle  # pass
+                            dut.status = DUT_STATUS.Idle  # pass
                         else:
                             dut.status = DUT_STATUS.Fail
                             dut.errormessage = "Charge Time or Vcap failed"
@@ -651,6 +634,24 @@ class Channel(threading.Thread):
                 dut.errormessage = "GTG_warning != 0x00"
             else:
                 dut.status = DUT_STATUS.Idle    # pass
+            if not self.erie.GetGTGPin(dut.slotnum):
+                dut.status = DUT_STATUS.Fail
+                dut.errormessage = "GTG Pin check failed"
+            else:
+                if self.InMode4in1:
+                    all_GTG = True
+                    for i in range(1, 4):
+                        self.switch_to_dut(dut.slotnum + i)
+                        if not self.erie.GetGTGPin(dut.slotnum + i):
+                            all_GTG &= False
+
+                    if all_GTG:
+                        dut.status = DUT_STATUS.Idle  # pass
+                    else:
+                        dut.status = DUT_STATUS.Fail
+                        dut.errormessage = "GTG Pin check failed"
+                else:
+                    dut.status = DUT_STATUS.Idle  # pass
 
     def save_db(self):
         # setup database

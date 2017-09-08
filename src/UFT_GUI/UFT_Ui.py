@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'UFT_Ui.ui'
 #
-# Created: Tue Sep 05 12:23:27 2017
+# Created: Fri Sep 08 09:17:45 2017
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -818,6 +818,30 @@ class Ui_Form(object):
         QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked(bool)")), self.groupBox14.setDisabled)
         QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked(bool)")), self.groupBox15.setDisabled)
         QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked(bool)")), self.groupBox16.setDisabled)
+        QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked()")), self.sn_lineEdit_2.clear)
+        QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked()")), self.sn_lineEdit_3.clear)
+        QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked()")), self.sn_lineEdit_4.clear)
+        QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked()")), self.sn_lineEdit_6.clear)
+        QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked()")), self.sn_lineEdit_7.clear)
+        QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked()")), self.sn_lineEdit_8.clear)
+        QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked()")), self.sn_lineEdit_10.clear)
+        QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked()")), self.sn_lineEdit_11.clear)
+        QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked()")), self.sn_lineEdit_12.clear)
+        QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked()")), self.sn_lineEdit_14.clear)
+        QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked()")), self.sn_lineEdit_15.clear)
+        QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked()")), self.sn_lineEdit_16.clear)
+        QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked()")), self.CablelineEdit_2.clear)
+        QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked()")), self.CablelineEdit_3.clear)
+        QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked()")), self.CablelineEdit_4.clear)
+        QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked()")), self.CablelineEdit_6.clear)
+        QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked()")), self.CablelineEdit_7.clear)
+        QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked()")), self.CablelineEdit_8.clear)
+        QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked()")), self.CablelineEdit_10.clear)
+        QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked()")), self.CablelineEdit_11.clear)
+        QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked()")), self.CablelineEdit_12.clear)
+        QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked()")), self.CablelineEdit_14.clear)
+        QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked()")), self.CablelineEdit_15.clear)
+        QtCore.QObject.connect(self.Mode4in1, QtCore.SIGNAL(_fromUtf8("clicked()")), self.CablelineEdit_16.clear)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):

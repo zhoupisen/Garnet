@@ -2743,6 +2743,390 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>Mode4in1</sender>
+   <signal>clicked()</signal>
+   <receiver>sn_lineEdit_2</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>933</x>
+     <y>48</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>125</x>
+     <y>143</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Mode4in1</sender>
+   <signal>clicked()</signal>
+   <receiver>sn_lineEdit_3</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>933</x>
+     <y>48</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>125</x>
+     <y>243</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Mode4in1</sender>
+   <signal>clicked()</signal>
+   <receiver>sn_lineEdit_4</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>933</x>
+     <y>48</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>125</x>
+     <y>343</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Mode4in1</sender>
+   <signal>clicked()</signal>
+   <receiver>sn_lineEdit_6</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>933</x>
+     <y>48</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>125</x>
+     <y>543</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Mode4in1</sender>
+   <signal>clicked()</signal>
+   <receiver>sn_lineEdit_7</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>933</x>
+     <y>48</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>125</x>
+     <y>643</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Mode4in1</sender>
+   <signal>clicked()</signal>
+   <receiver>sn_lineEdit_8</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>933</x>
+     <y>48</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>125</x>
+     <y>743</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Mode4in1</sender>
+   <signal>clicked()</signal>
+   <receiver>sn_lineEdit_10</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>933</x>
+     <y>48</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>365</x>
+     <y>143</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Mode4in1</sender>
+   <signal>clicked()</signal>
+   <receiver>sn_lineEdit_11</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>933</x>
+     <y>48</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>365</x>
+     <y>243</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Mode4in1</sender>
+   <signal>clicked()</signal>
+   <receiver>sn_lineEdit_12</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>933</x>
+     <y>48</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>365</x>
+     <y>343</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Mode4in1</sender>
+   <signal>clicked()</signal>
+   <receiver>sn_lineEdit_14</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>933</x>
+     <y>48</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>365</x>
+     <y>543</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Mode4in1</sender>
+   <signal>clicked()</signal>
+   <receiver>sn_lineEdit_15</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>933</x>
+     <y>48</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>365</x>
+     <y>643</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Mode4in1</sender>
+   <signal>clicked()</signal>
+   <receiver>sn_lineEdit_16</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>933</x>
+     <y>48</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>365</x>
+     <y>743</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Mode4in1</sender>
+   <signal>clicked()</signal>
+   <receiver>CablelineEdit_2</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>933</x>
+     <y>48</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>125</x>
+     <y>169</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Mode4in1</sender>
+   <signal>clicked()</signal>
+   <receiver>CablelineEdit_3</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>933</x>
+     <y>48</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>125</x>
+     <y>269</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Mode4in1</sender>
+   <signal>clicked()</signal>
+   <receiver>CablelineEdit_4</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>933</x>
+     <y>48</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>125</x>
+     <y>369</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Mode4in1</sender>
+   <signal>clicked()</signal>
+   <receiver>CablelineEdit_6</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>933</x>
+     <y>48</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>125</x>
+     <y>569</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Mode4in1</sender>
+   <signal>clicked()</signal>
+   <receiver>CablelineEdit_7</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>933</x>
+     <y>48</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>125</x>
+     <y>669</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Mode4in1</sender>
+   <signal>clicked()</signal>
+   <receiver>CablelineEdit_8</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>933</x>
+     <y>48</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>125</x>
+     <y>769</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Mode4in1</sender>
+   <signal>clicked()</signal>
+   <receiver>CablelineEdit_10</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>933</x>
+     <y>48</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>365</x>
+     <y>169</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Mode4in1</sender>
+   <signal>clicked()</signal>
+   <receiver>CablelineEdit_11</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>933</x>
+     <y>48</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>365</x>
+     <y>269</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Mode4in1</sender>
+   <signal>clicked()</signal>
+   <receiver>CablelineEdit_12</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>933</x>
+     <y>48</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>365</x>
+     <y>369</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Mode4in1</sender>
+   <signal>clicked()</signal>
+   <receiver>CablelineEdit_14</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>933</x>
+     <y>48</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>365</x>
+     <y>569</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Mode4in1</sender>
+   <signal>clicked()</signal>
+   <receiver>CablelineEdit_15</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>933</x>
+     <y>48</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>365</x>
+     <y>669</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>Mode4in1</sender>
+   <signal>clicked()</signal>
+   <receiver>CablelineEdit_16</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>933</x>
+     <y>48</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>365</x>
+     <y>769</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <buttongroups>
   <buttongroup name="buttonGroup"/>

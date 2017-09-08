@@ -431,10 +431,6 @@ class Channel(threading.Thread):
                 dut.errormessage = "PGEM Connection Issue"
                 logger.info("dut: {0} status: {1} message: {2} ".
                             format(dut.slotnum, dut.status, dut.errormessage))
-            else:
-                self.ps.selectChannel(dut.slotnum)
-                self.ps.activateOutput()
-
             if self.InMode4in1:
                 for i in range(1, 4):
                     self.switch_to_dut(dut.slotnum + i)
@@ -445,11 +441,7 @@ class Channel(threading.Thread):
                         dut.errormessage = "PGEM Connection Issue"
                         logger.info("dut: {0} status: {1} message: {2} ".
                                     format(dut.slotnum, dut.status, dut.errormessage))
-                    else:
-                        self.ps.selectChannel(dut.slotnum + i)
-                        self.ps.activateOutput()
 
-        time.sleep(5)
         for dut in self.dut_list:
             if dut is None:
                 continue
@@ -462,6 +454,14 @@ class Channel(threading.Thread):
             self.switch_to_dut(dut.slotnum)
 
             try:
+                self.ps.selectChannel(dut.slotnum)
+                self.ps.activateOutput()
+                if self.InMode4in1:
+                    for i in range(1, 4):
+                        self.ps.selectChannel(dut.slotnum + i)
+                        self.ps.activateOutput()
+
+                time.sleep(5)
                 if not dut.read_hwready():
                     time.sleep(5)
 

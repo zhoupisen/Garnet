@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'UFT_Ui.ui'
 #
-# Created: Fri Sep 08 09:17:45 2017
+# Created: Fri Sep 08 13:42:37 2017
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -231,7 +231,6 @@ class Ui_Form(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.log_tableView.sizePolicy().hasHeightForWidth())
         self.log_tableView.setSizePolicy(sizePolicy)
-        self.log_tableView.setMinimumSize(QtCore.QSize(994, 0))
         self.log_tableView.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.log_tableView.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
         self.log_tableView.setObjectName(_fromUtf8("log_tableView"))

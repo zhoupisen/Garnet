@@ -370,6 +370,13 @@ class Channel(threading.Thread):
                     elif (dut.charge_status()):
                         if(ceiling >dut.meas_vcap() >= threshold)&(max_chargetime>dut.charge_time>min_chargetime):  #dut.meas_chg_time()
                             all_charged &= True
+                            self.ps.selectChannel(dut.slotnum)
+                            self.ps.deactivateOutput()
+                            if self.InMode4in1:
+                                for i in range(1, 4):
+                                    self.ps.selectChannel(dut.slotnum + i)
+                                    self.ps.deactivateOutput()
+
                             if shutdown == True:
                                 self.erie.ShutdownDUT(dut.slotnum)
                             dut.status = DUT_STATUS.Idle  # pass

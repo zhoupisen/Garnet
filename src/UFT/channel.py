@@ -526,6 +526,18 @@ class Channel(threading.Thread):
                     dut.errormessage = "IIC access failed."
 
         # full discharge cycle
+        for dut in self.dut_list:
+            if dut is None:
+                continue
+            config = load_test_item(self.config_list[dut.slotnum],
+                                    "Discharge")
+            if (not config["enable"]):
+                continue
+            if (config["stoponfail"]) & (dut.status != DUT_STATUS.Idle):
+                continue
+            if config.get("Recharge", False) == "Yes":
+                dut.status = DUT_STATUS.Discharging
+
         all_fulldischarged = False
         start_time = time.time()
         while (not all_fulldischarged):
@@ -537,8 +549,6 @@ class Channel(threading.Thread):
                                         "Discharge")
                 if (not config["enable"]):
                     continue
-                if config.get("Recharge",False)=="Yes":
-                    dut.status = DUT_STATUS.Discharging
                 if (config["stoponfail"]) & \
                         (dut.status != DUT_STATUS.Discharging):
                     continue

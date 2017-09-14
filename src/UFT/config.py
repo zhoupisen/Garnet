@@ -19,7 +19,9 @@ DIAMOND4_LIST = ["AGIGA9811-001BCA",
 
 Mode4in1_PN = ["AGIGA9823-000KCA",
                "AGIGA9823-001JCA",
-               "AGIGA9823-002JCA"]
+               "AGIGA9823-002JCA",
+               "AGIGA9824-103JCA",
+               "AGIGA9824-103JCB"]
 
 # total slot number for one channel,
 # should be 4, 1 for debug

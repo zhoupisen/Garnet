@@ -172,7 +172,7 @@ class Channel(threading.Thread):
         if pt == "AGIGA9821":
             logger.info("dut: {0} PN: {1} setting type: Pearl family".format(port, pt))
             self.erie.SetProType(port, 0x00)
-        if pt == "AGIGA9822" or pt == "AGIGA9823":
+        if pt == "AGIGA9822" or pt == "AGIGA9823" or pt == "AGIGA9824":
             logger.info("dut: {0} PN: {1} setting type: Amber family ".format(port, pt))
             self.erie.SetProType(port, 0x01)
         if pt == "AGIGA9831":
@@ -568,7 +568,7 @@ class Channel(threading.Thread):
 
                 threshold = float(config["Threshold"].strip("aAvV"))
                 max_dischargetime = config["max"]
-                min_dischargetime = config["min"]
+                min_dischargetime = 5
 
                 fulldischarge_time = time.time() - start_time
                 if (fulldischarge_time > max_dischargetime):

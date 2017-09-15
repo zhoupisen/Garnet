@@ -14,7 +14,6 @@ from UFT.devices import aardvark
 logger = logging.getLogger(__name__)
 debugOut = False
 Group = 0
-DELAY4ERIE = 0.1
 FirmwareVersion = [1, 1]
 
 
@@ -24,7 +23,7 @@ class Erie(object):
     LastReceiving = ""
 
     def __init__(self, port='COM1', baudrate=115200, **kvargs):
-        timeout = kvargs.get('timeout', 10)
+        timeout = kvargs.get('timeout', 1)
         parity = kvargs.get('parity', serial.PARITY_NONE)
         bytesize = kvargs.get('bytesize', serial.EIGHTBITS)
         stopbits = kvargs.get('stopbits', serial.STOPBITS_ONE)
@@ -223,13 +222,22 @@ class Erie(object):
         self.ser.write(content)
 
     def _receiveresult_(self):
-        time.sleep(DELAY4ERIE)  # wait for response
         buff = []
         content = ""
-        while (self.ser.inWaiting() > 0):
+        idx = 0
+        datalen = 255
+
+        while(datalen > 0):
             tmp = self.ser.read(1)
-            buff.append(ord(tmp))
+            idx += 1
+            datalen -= 1
             content += tmp
+            buff.append(ord(tmp))
+            if idx == 5:
+                datalenlow = tmp
+            if idx == 6:
+                datalenhigh = tmp
+                datalen = (ord(datalenhigh) * 256) + ord(datalenlow)
 
         self.LastReceiving = content
         self._displaylanguage_(content)

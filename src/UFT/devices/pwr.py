@@ -71,3 +71,6 @@ class PowerSupply(object):
     def deactivateOutput(self):
         self.device.OutputOff(self.OccupyPort)
         pass
+
+    def isOutputOn(self):
+        return self.device.isOutputOn(self.OccupyPort)

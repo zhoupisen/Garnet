@@ -118,6 +118,18 @@ class Erie(object):
         if ret[2] != 0x06 or ret[6] != 0x00:
             raise Exception("UART communication failure")
 
+    def isOutputOn(self, port):
+        self._logging_("Get power output Status")
+        cmd = 0x07
+        self._transfercommand_(port, cmd)
+        ret = self._receiveresult_()
+        if ret[2] != 0x07 or ret[6] != 0x00:
+            raise Exception("UART communication failure")
+        if ret[7] == 0:
+            return False
+        else:
+            return True
+
     def LedOn(self, port):
         self._logging_("set LED on")
         cmd = 0x08

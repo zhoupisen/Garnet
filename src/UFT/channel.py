@@ -423,7 +423,17 @@ class Channel(threading.Thread):
             self.ps.selectChannel(dut.slotnum)
             self.ps.deactivateOutput()
 
-            time.sleep(1)
+        time.sleep(2)
+
+        for dut in self.dut_list:
+            if dut is None:
+                continue
+            config = load_test_item(self.config_list[dut.slotnum],
+                                    "Discharge")
+            if (not config["enable"]):
+                continue
+            if (config["stoponfail"]) & (dut.status != DUT_STATUS.Idle):
+                continue
 
             self.ld.select_channel(dut.slotnum)
             self.current = float(config["Current"].strip("aAvV"))
@@ -726,19 +736,34 @@ class Channel(threading.Thread):
                 continue
 
             self.ps.selectChannel(dut.slotnum)
-            self.ps.activateOutput()
+            if not self.ps.isOutputOn():
+                dut.status = DUT_STATUS.Fail
+                dut.errormessage = "No Power output, STOP cap measure"
 
             if self.InMode4in1:
                 for i in range(1, 4):
                     self.switch_to_dut(dut.slotnum + i)
 
                     self.ps.selectChannel(dut.slotnum + i)
-                    self.ps.activateOutput()
-            time.sleep(2)
+                    if not self.ps.isOutputOn():
+                        dut.status = DUT_STATUS.Fail
+                        dut.errormessage = "No Power output, STOP cap measure"
+
+        for dut in self.dut_list:
+            if dut is None:
+                continue
+            config = load_test_item(self.config_list[dut.slotnum],
+                                    "Capacitor")
+            if (not config["enable"]):
+                continue
+            if (config["stoponfail"]) & (dut.status != DUT_STATUS.Idle):
+                continue
+            if dut.status != DUT_STATUS.Idle:
+                continue
 
             self.switch_to_dut(dut.slotnum)
             dut.start_cap()
-            time.sleep(1)
+            #time.sleep(1)
             dut.status = DUT_STATUS.Cap_Measuring
             logger.info("started cap measure")
 

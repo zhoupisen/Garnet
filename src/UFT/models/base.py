@@ -243,7 +243,7 @@ class PGEMBase(DUT):
 
         for i in range(0x00, len(buffebf)):
             self.write_vpd_byaddress(i, buffebf[i])
-            self.device.sleep(5)
+            self.device.sleep(25)
             #print str(i)
             #print buffebf[i]
         # readback to check
@@ -283,7 +283,7 @@ class PGEMBase(DUT):
         for i in range(0x00, len(buffebf)):
             #self.write_vpd_byaddress(i, buffebf[i])
             self.device.write_reg(i, buffebf[i] & 0xFF)
-            self.device.sleep(5)
+            self.device.sleep(25)
             #print str(i)
             #print buffebf[i]
         # readback to check

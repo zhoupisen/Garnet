@@ -14,7 +14,7 @@ from UFT.devices import aardvark
 logger = logging.getLogger(__name__)
 debugOut = False
 Group = 0
-DELAY4ERIE = 0.07
+DELAY4ERIE = 0.1
 FirmwareVersion = [1, 1]
 
 
@@ -199,10 +199,6 @@ class Erie(object):
         self._logging_("read IIC data")
         cmd = 0x01
         self._transfercommand_(port, cmd, 0x02, [address] + data)
-        #try:
-            #ret = self._receiveresult_()
-        #except Exception:
-            #ret = self._receiveresult_()
         ret = self._receiveresult_()
         if ret[2] != 0x01 or ret[6] != 0x00:
             raise aardvark.USBI2CAdapterException("UART communication failure")
@@ -241,7 +237,7 @@ class Erie(object):
 
         self.LastReceiving = content
         self._displaylanguage_(content)
-        if len(buff) == 0:
+        if len(buff) < 7:
             self._erroroutinfor_()
             raise Exception("UART communication failure")
         if buff[0] != 0x55 or buff[1] != 0x77:

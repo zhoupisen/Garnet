@@ -14,11 +14,14 @@ from UFT.devices import aardvark
 logger = logging.getLogger(__name__)
 debugOut = False
 Group = 0
-DELAY4ERIE = 0.06
+DELAY4ERIE = 0.07
 FirmwareVersion = [1, 1]
 
 
 class Erie(object):
+
+    LastSending = ""
+    LastReceiving = ""
 
     def __init__(self, port='COM1', baudrate=115200, **kvargs):
         timeout = kvargs.get('timeout', 10)
@@ -48,6 +51,18 @@ class Erie(object):
             tmp = ord(c)
             display += "%x " % tmp
         self._logging_(display)
+
+    def _erroroutinfor_(self):
+        display = "  last sending command : "
+        for c in self.LastSending:
+            tmp = ord(c)
+            display += "%x " % tmp
+        logger.info(display)
+        display = "  last receiving data : "
+        for c in self.LastReceiving:
+            tmp = ord(c)
+            display += "%x " % tmp
+        logger.info(display)
 
     def GetVersion(self):
         self._logging_("Get firmware version")
@@ -184,10 +199,11 @@ class Erie(object):
         self._logging_("read IIC data")
         cmd = 0x01
         self._transfercommand_(port, cmd, 0x02, [address] + data)
-        try:
-            ret = self._receiveresult_()
-        except Exception:
-            ret = self._receiveresult_()
+        #try:
+            #ret = self._receiveresult_()
+        #except Exception:
+            #ret = self._receiveresult_()
+        ret = self._receiveresult_()
         if ret[2] != 0x01 or ret[6] != 0x00:
             raise aardvark.USBI2CAdapterException("UART communication failure")
         val.append(ret[7])
@@ -209,6 +225,7 @@ class Erie(object):
             for d in data:
                 content += chr(d)
 
+        self.LastSending = content
         self._displaylanguage_(content)
         self._cleanbuffer_()
         self.ser.write(content)
@@ -222,9 +239,12 @@ class Erie(object):
             buff.append(ord(tmp))
             content += tmp
 
+        self.LastReceiving = content
         self._displaylanguage_(content)
         if len(buff) == 0:
+            self._erroroutinfor_()
             raise Exception("UART communication failure")
         if buff[0] != 0x55 or buff[1] != 0x77:
+            self._erroroutinfor_()
             raise Exception("UART communication failure")
         return buff

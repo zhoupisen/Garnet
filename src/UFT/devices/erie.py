@@ -14,11 +14,14 @@ from UFT.devices import aardvark
 logger = logging.getLogger(__name__)
 debugOut = False
 Group = 0
-DELAY4ERIE = 0.05
-FirmwareVersion = [1, 0]
+DELAY4ERIE = 0.1
+FirmwareVersion = [1, 1]
 
 
 class Erie(object):
+
+    LastSending = ""
+    LastReceiving = ""
 
     def __init__(self, port='COM1', baudrate=115200, **kvargs):
         timeout = kvargs.get('timeout', 10)
@@ -30,8 +33,7 @@ class Erie(object):
                                  parity=parity, stopbits=stopbits)
         if (not self.ser.isOpen()):
             self.ser.open()
-            self.ser.flushInput()
-            self.ser.flushOutput()
+            self._cleanbuffer_()
 
         self.GetVersion()
 
@@ -49,6 +51,18 @@ class Erie(object):
             tmp = ord(c)
             display += "%x " % tmp
         self._logging_(display)
+
+    def _erroroutinfor_(self):
+        display = "  last sending command : "
+        for c in self.LastSending:
+            tmp = ord(c)
+            display += "%x " % tmp
+        logger.info(display)
+        display = "  last receiving data : "
+        for c in self.LastReceiving:
+            tmp = ord(c)
+            display += "%x " % tmp
+        logger.info(display)
 
     def GetVersion(self):
         self._logging_("Get firmware version")
@@ -187,6 +201,10 @@ class Erie(object):
         val.append(ret[7])
         return val
 
+    def _cleanbuffer_(self):
+        self.ser.flushInput()
+        self.ser.flushOutput()
+
     def _transfercommand_(self, port, cmd, datalen = 0, data = None):
         port += Group * 4
         header0 = 0x55
@@ -199,7 +217,9 @@ class Erie(object):
             for d in data:
                 content += chr(d)
 
+        self.LastSending = content
         self._displaylanguage_(content)
+        self._cleanbuffer_()
         self.ser.write(content)
 
     def _receiveresult_(self):
@@ -211,9 +231,12 @@ class Erie(object):
             buff.append(ord(tmp))
             content += tmp
 
+        self.LastReceiving = content
         self._displaylanguage_(content)
-        if len(buff) == 0:
+        if len(buff) < 7:
+            self._erroroutinfor_()
             raise Exception("UART communication failure")
         if buff[0] != 0x55 or buff[1] != 0x77:
+            self._erroroutinfor_()
             raise Exception("UART communication failure")
         return buff

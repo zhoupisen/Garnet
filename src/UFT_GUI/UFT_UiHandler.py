@@ -181,6 +181,7 @@ class UFT_UiHandler(UFT_UiForm):
             self.CablelineEdit_14.setDisabled(True)
             self.CablelineEdit_15.setDisabled(True)
             self.CablelineEdit_16.setDisabled(True)
+            self.Mode4in1.setDisabled(True)
         else:
             self.start_pushButton.setEnabled(True)
             self.sn_lineEdit_1.setEnabled(True)
@@ -215,6 +216,7 @@ class UFT_UiHandler(UFT_UiForm):
             self.CablelineEdit_14.setEnabled(True)
             self.CablelineEdit_15.setEnabled(True)
             self.CablelineEdit_16.setEnabled(True)
+            self.Mode4in1.setEnabled(True)
             self.sn_lineEdit_1.selectAll()
             self.sn_lineEdit_1.setFocus()
 
@@ -260,6 +262,9 @@ class UFT_UiHandler(UFT_UiForm):
             if not i:
                 i = ""
         return barcodes
+
+    def InMode4in1(self):
+        return bool(self.Mode4in1.checkState())
 
     def cabel_barcodes(self):
         cabel_barcodes = [str(self.CablelineEdit_1.text()),

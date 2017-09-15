@@ -183,11 +183,7 @@ class Erie(object):
         self._logging_("write IIC data")
         cmd = 0x02
         self._transfercommand_(port, cmd, 0x03, [address] + data)
-        try:
-            ret = self._receiveresult_()
-        except Exception:
-            ret = self._receiveresult_()
-
+        ret = self._receiveresult_()
         if ret[2] != 0x02 or ret[6] != 0x00:
             raise aardvark.USBI2CAdapterException("UART communication failure")
         return 0

@@ -134,7 +134,7 @@ class Adapter(object):
     def sleep(self, ms):
         '''sleep for specified number of milliseconds
         '''
-        time.sleep(ms*0.0001)
+        time.sleep(ms*0.001)
 
 
 if __name__ == "__main__":

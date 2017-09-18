@@ -650,17 +650,28 @@ class Channel(threading.Thread):
                 continue
             if (config["stoponfail"]) & (dut.status != DUT_STATUS.Idle):
                 continue
+            self.ps.selectChannel(dut.slotnum)
+            self.ps.activateOutput()
+            time.sleep(0.5)
+            if self.InMode4in1:
+                for i in range(1, 4):
+                    self.ps.selectChannel(dut.slotnum + i)
+                    self.ps.activateOutput()
+
+        time.sleep(5)
+        for dut in self.dut_list:
+            if dut is None:
+                continue
+            config = load_test_item(self.config_list[dut.slotnum],
+                                    "Program_VPD")
+            if (not config["enable"]):
+                continue
+            if (config["stoponfail"]) & (dut.status != DUT_STATUS.Idle):
+                continue
             self.switch_to_dut(dut.slotnum)
 
             try:
-                self.ps.selectChannel(dut.slotnum)
-                self.ps.activateOutput()
-                if self.InMode4in1:
-                    for i in range(1, 4):
-                        self.ps.selectChannel(dut.slotnum + i)
-                        self.ps.activateOutput()
 
-                time.sleep(5)
                 if not dut.read_hwready():
                     time.sleep(5)
 

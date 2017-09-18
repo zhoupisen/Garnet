@@ -241,6 +241,8 @@ class Erie(object):
 
         while(datalen > 0):
             tmp = self.ser.read(1)
+            if tmp == "":
+                break
             idx += 1
             datalen -= 1
             content += tmp

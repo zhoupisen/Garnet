@@ -881,25 +881,22 @@ class Channel(threading.Thread):
     def save_db(self):
         # setup database
         # db should be prepared in cli.py
-        try:
-            sm = SessionManager()
-            sm.prepare_db("sqlite:///" + RESULT_DB, [DUT, Cycle])
-            session = sm.get_session("sqlite:///" + RESULT_DB)
+        sm = SessionManager()
+        sm.prepare_db("sqlite:///" + RESULT_DB, [DUT, Cycle])
+        session = sm.get_session("sqlite:///" + RESULT_DB)
 
-            for dut in self.dut_list:
-                if dut is None:
-                    continue
-                for pre_dut in session.query(DUT). \
-                        filter(DUT.barcode == dut.barcode).all():
-                    pre_dut.archived = 1
-                    session.add(pre_dut)
-                    session.commit()
-                dut.archived = 0
-                session.add(dut)
+        for dut in self.dut_list:
+            if dut is None:
+                continue
+            for pre_dut in session.query(DUT). \
+                    filter(DUT.barcode == dut.barcode).all():
+                pre_dut.archived = 1
+                session.add(pre_dut)
                 session.commit()
-            session.close()
-        except Exception as e:
-            self.error(e)
+            dut.archived = 0
+            session.add(dut)
+            session.commit()
+        session.close()
 
     def save_file(self):
         """ save dut info to xml file

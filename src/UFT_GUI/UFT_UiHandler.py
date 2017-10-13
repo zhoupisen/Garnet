@@ -181,6 +181,22 @@ class UFT_UiHandler(UFT_UiForm):
             self.CablelineEdit_14.setDisabled(True)
             self.CablelineEdit_15.setDisabled(True)
             self.CablelineEdit_16.setDisabled(True)
+            self.BatterylineEdit_1.setDisabled(True)
+            self.BatterylineEdit_2.setDisabled(True)
+            self.BatterylineEdit_3.setDisabled(True)
+            self.BatterylineEdit_4.setDisabled(True)
+            self.BatterylineEdit_5.setDisabled(True)
+            self.BatterylineEdit_6.setDisabled(True)
+            self.BatterylineEdit_7.setDisabled(True)
+            self.BatterylineEdit_8.setDisabled(True)
+            self.BatterylineEdit_9.setDisabled(True)
+            self.BatterylineEdit_10.setDisabled(True)
+            self.BatterylineEdit_11.setDisabled(True)
+            self.BatterylineEdit_12.setDisabled(True)
+            self.BatterylineEdit_13.setDisabled(True)
+            self.BatterylineEdit_14.setDisabled(True)
+            self.BatterylineEdit_15.setDisabled(True)
+            self.BatterylineEdit_16.setDisabled(True)
             self.Mode4in1.setDisabled(True)
         else:
             self.start_pushButton.setEnabled(True)
@@ -216,6 +232,22 @@ class UFT_UiHandler(UFT_UiForm):
             self.CablelineEdit_14.setEnabled(True)
             self.CablelineEdit_15.setEnabled(True)
             self.CablelineEdit_16.setEnabled(True)
+            self.BatterylineEdit_1.setEnabled(True)
+            self.BatterylineEdit_2.setEnabled(True)
+            self.BatterylineEdit_3.setEnabled(True)
+            self.BatterylineEdit_4.setEnabled(True)
+            self.BatterylineEdit_5.setEnabled(True)
+            self.BatterylineEdit_6.setEnabled(True)
+            self.BatterylineEdit_7.setEnabled(True)
+            self.BatterylineEdit_8.setEnabled(True)
+            self.BatterylineEdit_9.setEnabled(True)
+            self.BatterylineEdit_10.setEnabled(True)
+            self.BatterylineEdit_11.setEnabled(True)
+            self.BatterylineEdit_12.setEnabled(True)
+            self.BatterylineEdit_13.setEnabled(True)
+            self.BatterylineEdit_14.setEnabled(True)
+            self.BatterylineEdit_15.setEnabled(True)
+            self.BatterylineEdit_16.setEnabled(True)
             self.Mode4in1.setEnabled(True)
             self.sn_lineEdit_1.selectAll()
             self.sn_lineEdit_1.setFocus()
@@ -287,6 +319,36 @@ class UFT_UiHandler(UFT_UiForm):
             if not i:
                 i = ""
         return cabel_barcodes
+
+    def capacitor_barcodes(self):
+        capacitor_barcodes = [str(self.BatterylineEdit_1.text()),
+                          str(self.BatterylineEdit_2.text()),
+                          str(self.BatterylineEdit_3.text()),
+                          str(self.BatterylineEdit_4.text()),
+                          str(self.BatterylineEdit_5.text()),
+                          str(self.BatterylineEdit_6.text()),
+                          str(self.BatterylineEdit_7.text()),
+                          str(self.BatterylineEdit_8.text()),
+                          str(self.BatterylineEdit_9.text()),
+                          str(self.BatterylineEdit_10.text()),
+                          str(self.BatterylineEdit_11.text()),
+                          str(self.BatterylineEdit_12.text()),
+                          str(self.BatterylineEdit_13.text()),
+                          str(self.BatterylineEdit_14.text()),
+                          str(self.BatterylineEdit_15.text()),
+                          str(self.BatterylineEdit_16.text())]
+        for i in capacitor_barcodes:
+            if not i:
+                i = ""
+        return capacitor_barcodes
+
+    def click_on_TabCable(self):
+        self.CablelineEdit_1.selectAll()
+        self.CablelineEdit_1.setFocus()
+
+    def click_on_TabBattery(self):
+        self.BatterylineEdit_1.selectAll()
+        self.BatterylineEdit_1.setFocus()
 
     def show_image(self):
         barcodes = self.barcodes()

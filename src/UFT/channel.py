@@ -54,7 +54,7 @@ class Channel(threading.Thread):
     # setup main power supply
     ps = pwr.PowerSupply(erie)
 
-    def __init__(self, name, barcode_list, cable_barcodes_list, mode4in1, channel_id=0):
+    def __init__(self, name, barcode_list, cable_barcodes_list, capacitor_barcodes_list, mode4in1, channel_id=0):
         """initialize channel
         :param name: thread name
         :param barcode_list: list of 2D barcode of dut.
@@ -74,6 +74,7 @@ class Channel(threading.Thread):
         self.config_list = []
         self.barcode_list = barcode_list
         self.cable_barcodes_list = cable_barcodes_list
+        self.capacitor_barcodes_list = capacitor_barcodes_list
 
         # progress bar, 0 to 100
         self.progressbar = 0
@@ -157,6 +158,7 @@ class Channel(threading.Thread):
                         raise Exception("This partnumber {0} does not support Mode4in1".format(dut.partnumber))
                 dut.status = DUT_STATUS.Idle
                 dut.cable_barcode = self.cable_barcodes_list[i]
+                dut.capacitor_barcode = self.capacitor_barcodes_list[i]
                 dut.testdate = datetime.datetime.utcnow()
                 self.dut_list.append(dut)
                 dut_config = load_config("sqlite:///" + CONFIG_DB,

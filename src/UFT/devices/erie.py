@@ -224,7 +224,7 @@ class Erie(object):
         content += chr(datalen & 0xFF)
         content += chr((datalen >> 8) & 0xFF)
 
-        if (datalen != 0) & (data is not None):
+        if (datalen != 0) and (data is not None):
             for d in data:
                 content += chr(d)
 

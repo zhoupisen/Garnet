@@ -54,7 +54,7 @@ class Channel(threading.Thread):
     # setup main power supply
     ps = pwr.PowerSupply(erie)
 
-    def __init__(self, name, barcode_list, cable_barcodes_list, mode4in1, channel_id=0):
+    def __init__(self, name, barcode_list, cable_barcodes_list, capacitor_barcodes_list, mode4in1, channel_id=0):
         """initialize channel
         :param name: thread name
         :param barcode_list: list of 2D barcode of dut.
@@ -74,6 +74,7 @@ class Channel(threading.Thread):
         self.config_list = []
         self.barcode_list = barcode_list
         self.cable_barcodes_list = cable_barcodes_list
+        self.capacitor_barcodes_list = capacitor_barcodes_list
 
         # progress bar, 0 to 100
         self.progressbar = 0
@@ -157,6 +158,7 @@ class Channel(threading.Thread):
                         raise Exception("This partnumber {0} does not support Mode4in1".format(dut.partnumber))
                 dut.status = DUT_STATUS.Idle
                 dut.cable_barcode = self.cable_barcodes_list[i]
+                dut.capacitor_barcode = self.capacitor_barcodes_list[i]
                 dut.testdate = datetime.datetime.utcnow()
                 self.dut_list.append(dut)
                 dut_config = load_config("sqlite:///" + CONFIG_DB,
@@ -881,22 +883,25 @@ class Channel(threading.Thread):
     def save_db(self):
         # setup database
         # db should be prepared in cli.py
-        sm = SessionManager()
-        sm.prepare_db("sqlite:///" + RESULT_DB, [DUT, Cycle])
-        session = sm.get_session("sqlite:///" + RESULT_DB)
+        try:
+            sm = SessionManager()
+            sm.prepare_db("sqlite:///" + RESULT_DB, [DUT, Cycle])
+            session = sm.get_session("sqlite:///" + RESULT_DB)
 
-        for dut in self.dut_list:
-            if dut is None:
-                continue
-            for pre_dut in session.query(DUT). \
-                    filter(DUT.barcode == dut.barcode).all():
-                pre_dut.archived = 1
-                session.add(pre_dut)
+            for dut in self.dut_list:
+                if dut is None:
+                    continue
+                for pre_dut in session.query(DUT). \
+                        filter(DUT.barcode == dut.barcode).all():
+                    pre_dut.archived = 1
+                    session.add(pre_dut)
+                    session.commit()
+                dut.archived = 0
+                session.add(dut)
                 session.commit()
-            dut.archived = 0
-            session.add(dut)
-            session.commit()
-        session.close()
+            session.close()
+        except Exception as e:
+            self.error(e)
 
     def save_file(self):
         """ save dut info to xml file

@@ -11,10 +11,11 @@ __all__ = ["Channel", "ChannelStates"]
 from UFT.devices import pwr, load, aardvark
 from UFT.devices import erie
 from UFT.models import DUT_STATUS, DUT, Cycle, PGEMBase, Diamond4
-from UFT.backend import load_config, load_test_item
+from UFT.backend import load_config, load_test_item, get_latest_revision
 from UFT.backend.session import SessionManager
 from UFT.backend import simplexml
 from UFT.config import *
+from PyQt4 import QtGui
 import threading
 from Queue import Queue
 import logging
@@ -26,6 +27,55 @@ import datetime
 import numpy as np
 
 logger = logging.getLogger(__name__)
+
+
+class Override(QtGui.QDialog):
+    def __init__(self, parent=None):
+        QtGui.QDialog.__init__(self, parent)
+        self.setWindowTitle(u'Override')
+        self.resize(300, 150)
+
+        self.leText = QtGui.QLabel()
+        self.leText.setText(u'The Revision of this partnumber is not the latest one!\n'+'Please Enter Password')
+
+        self.leName = QtGui.QLineEdit(self)
+        self.leName.setPlaceholderText(u'user')
+
+        self.lePassword = QtGui.QLineEdit(self)
+        self.lePassword.setEchoMode(QtGui.QLineEdit.Password)
+        self.lePassword.setPlaceholderText(u'password')
+
+        self.pbLogin = QtGui.QPushButton(u'login', self)
+        self.pbCancel = QtGui.QPushButton(u'cancel', self)
+
+        self.pbLogin.clicked.connect(self.login)
+        self.pbCancel.clicked.connect(self.reject)
+
+        layout = QtGui.QVBoxLayout()
+        layout.addWidget(self.leText)
+        layout.addWidget(self.leName)
+        layout.addWidget(self.lePassword)
+
+        spacerItem = QtGui.QSpacerItem(20, 28, QtGui.QSizePolicy.Minimum,
+                                       QtGui.QSizePolicy.Expanding)
+        layout.addItem(spacerItem)
+
+        buttonLayout = QtGui.QHBoxLayout()
+        spancerItem2 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding,
+                                         QtGui.QSizePolicy.Minimum)
+        buttonLayout.addItem(spancerItem2)
+        buttonLayout.addWidget(self.pbLogin)
+        buttonLayout.addWidget(self.pbCancel)
+
+        layout.addLayout(buttonLayout)
+
+        self.setLayout(layout)
+
+    def login(self):
+        if self.leName.text() == 'cypress' and self.lePassword.text() == '123':
+            self.accept()
+        else:
+            QtGui.QMessageBox.critical(self, u'error', u'password wrong')
 
 
 class ChannelStates(object):
@@ -165,6 +215,15 @@ class Channel(threading.Thread):
                                          dut.partnumber, dut.revision)
                 self.config_list.append(dut_config)
                 self.set_productype(dut.slotnum, dut.producttype)
+                latest_revision = get_latest_revision("sqlite:///" + CONFIG_DB,
+                                         dut.partnumber)
+                logger.info("dut: {0} has the latest revision of this partnumber is {1}"
+                            .format(dut.slotnum, latest_revision))
+                if latest_revision != dut.revision:
+                    dialog = Override()
+                    if not dialog.exec_():
+                        dut.errormessage = "Not the latest revision"
+                        dut.status = DUT_STATUS.Fail
             else:
                 # dut is not loaded on fixture
                 self.dut_list.append(None)

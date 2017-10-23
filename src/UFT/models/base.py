@@ -9,6 +9,7 @@ __all__ = ["PGEMBase"]
 import logging
 import struct
 import re
+import time
 from dut import DUT
 
 logger = logging.getLogger(__name__)
@@ -18,14 +19,22 @@ EEP_MAP = [{"name": "MODEL", "addr": 0x000, "length": 16, "type": "str"},
            {"name": "ES_FWREV0", "addr": 0x010, "length": 1, "type": "int"},
            {"name": "ES_FWREV1", "addr": 0x011, "length": 1, "type": "int"},
            {"name": "ES_HWREV", "addr": 0x012, "length": 1, "type": "int"},
-           {"name": "CAPPN", "addr": 0x020, "length": 12, "type": "str"},
+           {"name": "CAPPN", "addr": 0x020, "length": 16, "type": "str"},
            {"name": "SN", "addr": 0x030, "length": 8, "type": "str"},
            {"name": "PCBVER", "addr": 0x040, "length": 2, "type": "str"},
            {"name": "MFDATE", "addr": 0x042, "length": 4, "type": "str"},
            {"name": "MFNAME", "addr": 0x046, "length": 2, "type": "str"},
-           {"name": "CINIT", "addr": 0x050, "length": 1, "type": "int"},
+           {"name": "CINIT", "addr": 0x050, "length": 2, "type": "int"},
            {"name": "MINTEMP", "addr": 0x060, "length": 1, "type": "int"},
            {"name": "MAXTEMP", "addr": 0x061, "length": 1, "type": "int"},
+           {"name": "ES_CHRGE_TIMEOUT", "addr": 0x080, "length": 2, "type": "int"},
+           {"name": "MIN_ES_OPERATING_TEMP", "addr": 0x082, "length": 1, "type": "int"},
+           {"name": "MAX_ES_OPERATING_TEMP", "addr": 0x083, "length": 1, "type": "int"},
+           {"name": "ES_TECH", "addr": 0x084, "length": 1, "type": "int"},
+           {"name": "SPECCAP", "addr": 0x085, "length": 2, "type": "int"},
+           {"name": "PID", "addr": 0x087, "length": 2, "type": "int"},
+           {"name": "VPD_REV", "addr": 0x0FD, "length": 1, "type": "int"},
+           {"name": "VPD_CRC", "addr": 0x0FE, "length": 2, "type": "int"},
            {"name": "LASTCAP", "addr": 0x100, "length": 1, "type": "int"},
            {"name": "MINCAP", "addr": 0x101, "length": 1, "type": "int"},
            {"name": "MAXCAP", "addr": 0x102, "length": 1, "type": "int"},
@@ -43,7 +52,7 @@ EEP_MAP = [{"name": "MODEL", "addr": 0x000, "length": 16, "type": "str"},
 PGEM_ID = {0: "A", 1: "B", 2: "C", 3: "D"}
 
 BARCODE_PATTERN = re.compile(
-    r'^(?P<SN>(?P<PN>AGIGA\d{4}-\d{3}\w{3})(?P<VV>\d{2})(?P<YY>[1-2][0-9])'
+    r'^(?P<SN>(?P<PN>(?P<PT>AGIGA\d{4})-\d{3}\w{3})(?P<VV>\d{2})(?P<YY>[1-2][0-9])'
     r'(?P<WW>[0-4][0-9]|5[0-3])(?P<ID>\d{8})-(?P<RR>\d{2}))$')
 
 
@@ -72,6 +81,7 @@ class PGEMBase(DUT):
             self.barcode_dict = r.groupdict()
             self.partnumber = self.barcode_dict["PN"]
             self.revision = self.barcode_dict["RR"]
+            self.producttype = self.barcode_dict["PT"]
         else:
             raise PGEMException("Unvalide barcode.")
 
@@ -120,6 +130,39 @@ class PGEMBase(DUT):
                 val += datas[i] << 8 * i
         return val
 
+    def read_eep_byname(self, reg_name, portnum):
+        """method to read eep_data according to eep_name
+        eep is one dict in eep_map, for example:
+        {"name": "CINT", "addr": 0x02B3, "length": 1, "type": "int"}
+        :param reg_name: register name, e.g. "PCA"
+        :return value of the register
+        """
+        eep = self._query_map(EEP_MAP, name=reg_name)[0]
+        start = eep["addr"]  # start_address
+        length = eep["length"]  # length
+        typ = eep["type"]  # type
+        datas=[]
+        self.device.slave_addr = 0x53 + portnum
+        for i in range(length):
+            #self.device.write_reg(0x00,(start+i) & 0xFF)
+            #self.device.write_reg(0x01,((start+i)>>8) & 0xFF)
+            #print start+i
+            #self.device.sleep(5)
+            temp=self.device.read_reg((start+i) & 0xFF)
+            datas.append(temp[0])
+
+        if (typ == "word"):
+            val = 0
+            for i in range(0, len(datas)):
+                val += datas[i] << 8 * i
+        if (typ == "str"):
+            val = ''.join(chr(i) for i in datas)
+        if (typ == "int"):
+            val = 0
+            for i in range(0, len(datas)):
+                val += datas[i] << 8 * i
+        return val
+
     def read_vpd_byaddress(self, address):
         """method to read eep_data according to eep_address
         :return value of the register
@@ -129,6 +172,14 @@ class PGEMBase(DUT):
         self.device.write_reg(0x01,(address>>8) & 0xFF)
         val = self.device.read_reg(0x02)
         return val
+
+    def dump_vpd(self):
+        ret = []
+        self.device.slave_addr = 0x14
+        for i in range(0x000, 0xFFF):
+            ret.append(self.read_vpd_byaddress(i)[0])
+        logger.info(ret)
+        return ret
 
     def read_vpd(self):
         """method to read out EEPROM info from dut
@@ -163,7 +214,7 @@ class PGEMBase(DUT):
         self.device.sleep(5)
         self.device.write_reg(0x02,data & 0xFF)
 
-    def write_vpd(self, filepath, write_id):
+    def write_vpd(self, filepath):
         """method to write barcode information to PGEM EEPROM
         :param filepath: the ebf file location.
         """
@@ -192,7 +243,7 @@ class PGEMBase(DUT):
 
         for i in range(0x00, len(buffebf)):
             self.write_vpd_byaddress(i, buffebf[i])
-            self.device.sleep(5)
+            #self.device.sleep(25)
             #print str(i)
             #print buffebf[i]
         # readback to check
@@ -202,6 +253,45 @@ class PGEMBase(DUT):
                self.read_vpd_byname("MFDATE")
         assert self.barcode_dict["VV"] == self.read_vpd_byname("MFNAME")
 
+    def write_shared_vpd(self, filepath, potnum):
+        """method to write barcode information to PGEM EEPROM
+        :param filepath: the ebf file location.
+        """
+        buffebf = self.load_bin_file(filepath)
+        # [ord(x) for x in string]
+        id = [ord(x) for x in self.barcode_dict['ID']]
+        yyww = [ord(x) for x in (self.barcode_dict['YY'] +
+                                 self.barcode_dict['WW'])]
+        vv = [ord(x) for x in self.barcode_dict['VV']]
+
+        # id == SN == Product Serial Number
+        eep = self._query_map(EEP_MAP, name="SN")[0]
+        buffebf[eep["addr"]: eep["addr"] + eep["length"]] = id
+
+        # yyww == MFDATE == Manufacture Date YY WW
+        eep = self._query_map(EEP_MAP, name="MFDATE")[0]
+        buffebf[eep["addr"]: eep["addr"] + eep["length"]] = yyww
+
+        # vv == ENDUSR == Manufacturer Name
+        eep = self._query_map(EEP_MAP, name="MFNAME")[0]
+        buffebf[eep["addr"]: eep["addr"] + eep["length"]] = vv
+
+        self.device.slave_addr = (0x53 + potnum)
+        # can be start with 0x41, 0x00 for ensurance.
+        #self.device.write_reg(0x40,0x45) # enable EEP write
+
+        for i in range(0x00, len(buffebf)):
+            #self.write_vpd_byaddress(i, buffebf[i])
+            self.device.write_reg(i, buffebf[i] & 0xFF)
+            #self.device.sleep(25)
+            #print str(i)
+            #print buffebf[i]
+        # readback to check
+        #print self.barcode_dict
+        assert self.barcode_dict["ID"] == self.read_eep_byname("SN", potnum)
+        assert (self.barcode_dict["YY"] + self.barcode_dict["WW"]) == \
+               self.read_eep_byname("MFDATE", potnum)
+        assert self.barcode_dict["VV"] == self.read_eep_byname("MFNAME", potnum)
 
     def control_led(self, status="off"):
         """method to control the LED on DUT chip PCA9536DP
@@ -293,16 +383,58 @@ class PGEMBase(DUT):
         else:
             return False
 
+    def read_PGEMSTAT(self, bit=None):
+        self.device.slave_addr = 0x14
+        if(bit==None):
+            val = self.device.read_reg(0x23, 0x01)
+        else:
+            val = self.device.read_reg(0x23, 0x01)[bit]
+        return val
+
+    def read_GTG(self, bit=None):
+        self.device.slave_addr = 0x14
+        if(bit==None):
+            val = self.device.read_reg(0x21, 0x01)
+        else:
+            val = self.device.read_reg(0x21, 0x01)[bit]
+        return val
+
+    def read_GTG_WARN(self, bit=None):
+        self.device.slave_addr = 0x14
+        if(bit==None):
+            val = self.device.read_reg(0x22, 0x01)
+        else:
+            val = self.device.read_reg(0x22, 0x01)[bit]
+        return val
+
+    def reset_minmax(self):
+        self.device.slave_addr = 0x14
+        self.device.write_reg(0x05, 0xE6)
+        logger.info("reset min max")
+        time.sleep(5)
+
+    def flush_ee(self):
+        self.device.slave_addr = 0x14
+        self.device.write_reg(0x41, 0x3A)
+        logger.info("flush eeprom")
+        time.sleep(1)
+
     def reset_sys(self):
         self.device.slave_addr = 0x14
         # reset register
         self.device.write_reg(0x04, 0xF4)
+        logger.info("reset system")
         time.sleep(5)
 
     def start_cap(self):
         self.device.slave_addr = 0x14
         # reset register
         self.device.write_reg(0x03, 0x01)
+
+    def shutdown_output(self):
+        self.device.slave_addr = 0x14
+        self.device.write_reg(0x06, 0xB4)
+        logger.info("Shutdown output")
 
 
     def charge_status(self):
@@ -314,7 +446,7 @@ class PGEMBase(DUT):
         val2 = self.device.read_reg(0x21, length=1)[0]
         logger.info("GTG value: {0}".format(val2))
         logger.debug("GTG value: {0}".format(val2))
-        if ((val1|0xFE)==0xFE) & ((val2&0x83)==0x83):
+        if ((val1|0xFE)==0xFE) & ((val2&0x09)==0x09):
             return True
         else:
             return False

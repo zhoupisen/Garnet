@@ -70,6 +70,25 @@ def load_config(dburi, partnumber, revision):
     return pgem_config
 
 
+def get_latest_revision(dburi, partnumber):
+    """
+    :param dburi:  database uri, eg. "sqlite:///config.db"
+    :param partnumber: partnumber of DUT, eg. "AGIGA9601-002BCA"
+    :return: PGEMConfig object
+    """
+    sm = SessionManager()
+    sess = sm.get_session(dburi)
+    pgem_config = sess.query(PGEMConfig).filter(
+        PGEMConfig.partnumber == partnumber,
+    ).order_by(PGEMConfig.revision.desc()).first()
+    if pgem_config is None:
+        raise BackendException(partnumber +
+                               " is not found in configuration database")
+    logger.debug(pgem_config.to_dict())
+    sess.close()
+    return pgem_config.to_dict()["revision"]
+
+
 def load_test_item(config, itemname):
     """
     load misc test items from config object with item name.

@@ -68,7 +68,9 @@ class MainWidget(QtGui.QWidget):
         try:
             barcodes = self.ui.barcodes()
             cable_barcodes = self.ui.cabel_barcodes()
-            self.u = Update(barcodes, cable_barcodes)
+            capacitor_barcodes = self.ui.capacitor_barcodes()
+            mode4in1 = self.ui.InMode4in1()
+            self.u = Update(barcodes, cable_barcodes, capacitor_barcodes, mode4in1)
             self.connect(self.u, QtCore.SIGNAL('progress_bar'),
                          self.ui.progressBar.setValue)
             self.connect(self.u, QtCore.SIGNAL('is_alive'),
@@ -87,10 +89,10 @@ class MainWidget(QtGui.QWidget):
 
 
 class Update(QtCore.QThread):
-    def __init__(self, barcodes, cable_barcodes):
+    def __init__(self, barcodes, cable_barcodes, capacitor_barcodes, mode):
         QtCore.QThread.__init__(self)
-        self.ch = Channel(barcode_list=barcodes, cable_barcodes_list=cable_barcodes, channel_id=0,
-                          name="UFT_CHANNEL")
+        self.ch = Channel(barcode_list=barcodes, cable_barcodes_list=cable_barcodes, capacitor_barcodes_list=capacitor_barcodes,
+                          channel_id=0, name="UFT_CHANNEL", mode4in1=mode)
         self.ch.setDaemon(True)
 
     def __del__(self):
